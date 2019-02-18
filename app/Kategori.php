@@ -9,7 +9,7 @@ class Kategori extends Model
     protected $table = 'kategori';
     protected $primaryKey = null;
     protected $guarded = [];
-    public $incrementing = false;
+    public $incrementing = true;
     public $timestamps = false;
 
     public function Katalog(){

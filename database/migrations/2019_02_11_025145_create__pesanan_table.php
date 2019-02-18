@@ -14,20 +14,17 @@ class CreatePesananTable extends Migration
     public function up()
     {
         Schema::create('Pesanan', function (Blueprint $table) {
-            $table->increments('IDPesanan');
+            $table->bigIncrements('IDPesanan');
             $table->integer('IDPelanggan');
             $table->integer('NoPesanan');
             $table->timestamp('DiterimaTgl')->nullable(true);
             $table->timestamp('SelesaiTgl')->nullable(true);
-            $table->boolean('Asal');
             $table->boolean('Percepatan')->default(false);
             $table->string('Keterangan')->nullable(true);
             $table->boolean('KembalikanSampel')->default(false);
-            $table->bigInteger('TotalBiaya');
-            $table->string('BuktiPengiriman')->nullable(true);
-            $table->string('BuktiPembayaran')->nullable(true);
-            $table->string('Ulasan')->nullable(true);
+            $table->bigInteger('TotalHarga');
             $table->timestamp('WaktuPemesanan')->nullable(true);
+            $table->string('Ulasan')->nullable(true);
         });
     }
 

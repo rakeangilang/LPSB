@@ -20,4 +20,6 @@ Route::middleware('auth:api')->get('/user', function (Request $request) {
 // Katalog
 Route::get('/getAllKatalog', 'KatalogController@getAllKatalog');
 Route::get('/getAllKategori', 'KatalogController@getAllKategori');
-Route::get('/getKatalog/{id_kategori}', 'KatalogController@getKatalogByKategori');
+Route::get('/getKatalogByKategori/{id_kategori}', 'KatalogController@getKatalogByKategori');
+Route::get('/getBentukHargaSampel/{id_katalog}', 'KatalogController@getBentukHargaByKatalog');
+Route::get('/getKatalog/{id_katalog}', 'KatalogController@getKatalogByID');

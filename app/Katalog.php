@@ -14,8 +14,8 @@ class Katalog extends Model
     const CREATED_AT = 'DitambahkanPada';
     const UPDATED_AT = 'DiupdatePada';
 
-    public function BentukSample(){
-    	return $this->hasOne('App\BentukSample', 'IDKatalog', 'IDKatalog');
+    public function BentukSampel(){
+    	return $this->hasOne('App\BentukSampel', 'IDKatalog', 'IDKatalog');
     }
 
     public function Kategori(){

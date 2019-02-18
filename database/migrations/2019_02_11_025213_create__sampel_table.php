@@ -14,13 +14,14 @@ class CreateSampelTable extends Migration
     public function up()
     {
         Schema::create('Sampel', function (Blueprint $table) {
-            $table->integer('IDPesanan');
+            $table->bigIncrements('IDPesanan');
             $table->integer('NoSampel')->nullable(true);
             $table->string('JenisSampel');
+            $table->text('BentukSampel');
             $table->string('Kemasan');
             $table->integer('Jumlah');
             $table->string('JenisAnalisis');
-            $table->string('ListHargaSampel');
+            $table->string('HargaSampel');
         });
     }
 

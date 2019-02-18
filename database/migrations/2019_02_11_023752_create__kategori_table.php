@@ -16,6 +16,7 @@ class CreateKategoriTable extends Migration
         Schema::create('Kategori', function (Blueprint $table) {
             $table->increments('IDKategori');
             $table->string('Kategori');
+            $table->string('FotoKategori')->nullable(true);
         });
     }
 

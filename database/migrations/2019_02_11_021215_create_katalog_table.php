@@ -21,9 +21,10 @@ class CreateKatalogTable extends Migration
             $table->bigInteger('HargaNONIPB');
             $table->string('Metode');
             $table->string('Keterangan')->nullable(true);
-            $table->boolean('Status')->default(1);
+            $table->boolean('StatusAktif')->default(1);
             $table->timestamp('DitambahkanPada')->nullable(true);
             $table->timestamp('DiupdatePada')->nullable(true);
+            $table->string('FotoKatalog')->nullable(true);
         });
     }
 

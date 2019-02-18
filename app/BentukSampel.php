@@ -4,12 +4,12 @@ namespace App;
 
 use Illuminate\Database\Eloquent\Model;
 
-class BentukSample extends Model
+class BentukSampel extends Model
 {
     //
-    protected $table = 'BentukSample';
+    protected $table = 'bentuksampel';
     protected $primaryKey = null;
-    public $incrementing = false;
+    public $incrementing = true;
     protected $guarded = [];
     public $timestamps = false;
 

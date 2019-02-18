@@ -14,12 +14,13 @@ class CreatePelacakanTable extends Migration
     public function up()
     {
         Schema::create('Pelacakan', function (Blueprint $table) {
-            $table->integer('IDPesanan');
+            $table->bigIncrements('IDPesanan');
             $table->integer('IDStatus');
-            $table->boolean('KirimSertifikat');
-            $table->boolean('SisaDiterima');
-            $table->boolean('SertifikatDiterima');
+            $table->boolean('KirimSertifikat')->default(0);
+            $table->boolean('SisaDiterima')->default(0);
+            $table->boolean('SertifikatDiterima')->default(0);
             $table->timestamp('UpdateTerakhir');
+            $table->timestamp('WaktuPembayaran')->nullable(true);
         });
     }
 
