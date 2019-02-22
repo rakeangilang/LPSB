@@ -17,9 +17,16 @@ Route::middleware('auth:api')->get('/user', function (Request $request) {
     return $request->user();
 });
 
+// Auth
+Route::post('/register', 'ApiAuthController@register');
+Route::post('/login', 'ApiAuthController@login');
+
 // Katalog
-Route::get('/getAllKatalog', 'KatalogController@getAllKatalog');
-Route::get('/getAllKategori', 'KatalogController@getAllKategori');
-Route::get('/getKatalogByKategori/{id_kategori}', 'KatalogController@getKatalogByKategori');
-Route::get('/getBentukHargaSampel/{id_katalog}', 'KatalogController@getBentukHargaByKatalog');
-Route::get('/getKatalog/{id_katalog}', 'KatalogController@getKatalogByID');
+Route::get('/getAllKatalog', 'KatalogController@getAllKatalog')->middleware('auth:api');
+Route::get('/getAllKategori', 'KatalogController@getAllKategori')->middleware('auth:api');
+Route::get('/getKatalogByKategori/{id_kategori}', 'KatalogController@getKatalogByKategori')->middleware('auth:api');
+Route::get('/getBentukHargaSampel/{id_katalog}', 'KatalogController@getBentukHargaByKatalog')->middleware('auth:api');
+Route::get('/getKatalog/{id_katalog}', 'KatalogController@getKatalogByID')->middleware('auth:api');
+
+// Pelanggan
+Route::get('/getInfoRekening', 'PelangganController@getInfoRekening')->middleware('auth:api');

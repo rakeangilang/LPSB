@@ -15,9 +15,17 @@ class User extends Authenticatable
      *
      * @var array
      */
-    protected $fillable = [
-        'name', 'email', 'password',
+    protected $table = 'pelanggan';
+    protected $primaryKey = 'IDPelanggan';
+    protected $guarded = [
+        'IDPelanggan'
     ];
+    public $timestamps = false;
+
+    public function getAuthPassword()
+    {
+        return $this->Password;
+    }
 
     /**
      * The attributes that should be hidden for arrays.
@@ -25,6 +33,10 @@ class User extends Authenticatable
      * @var array
      */
     protected $hidden = [
-        'password', 'remember_token',
+        'Password'
     ];
+
+    public function Pesanan(){
+        return $this->hasMany('App\Pesanan', 'IDPelanggan', 'IDPelanggan');
+    }
 }
