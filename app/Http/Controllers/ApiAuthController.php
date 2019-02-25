@@ -21,8 +21,9 @@ class ApiAuthController extends Controller
     	if(User::where('Email', '=', $email)->exists()){
     		return response()->json([
     			'success'=>false,
-    			'message'=>'Email sudah terdaftar'
-    			]);
+    			'message'=>'Email sudah terdaftar',
+          'Status' => 409
+    			], 409);
     	}
     	else {
     		User::create([
@@ -37,8 +38,9 @@ class ApiAuthController extends Controller
             'message'=>'Register berhasil, simpan data pengguna',
     		'Nama' => $nama,
     		'Email' => $email,
-    		'api_token' => $api_token
-    		]);
+    		'api_token' => $api_token,
+        'Status' => 201
+    		], 201);
     	} 	
     }
 
@@ -47,7 +49,7 @@ class ApiAuthController extends Controller
 
         if(!Auth::attempt(['Email' => $request->Email, 'password' => $request->Password]))
       {
-          return response()->json(['error' => "Email atau password salah"], 401);
+          return response()->json(['error' => "Email atau password salah", "Status" => 400], 400);
       }
 
         $user = $user->find(Auth::user()->IDPelanggan);
@@ -77,8 +79,9 @@ class ApiAuthController extends Controller
           'NoIdentitas' => $no_identitas,
           'NamaRekening' => $nama_rekening,
           'NamaBank' => $nama_bank,
-          'NoRekening' => $no_rekening
-        ]);
+          'NoRekening' => $no_rekening,
+          'Status' => 200
+        ], 200);
     }
 
 }

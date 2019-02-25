@@ -11,6 +11,8 @@ class Katalog extends Model
     protected $primaryKey = 'IDKatalog';
     protected $guarded = ['IDKatalog', 'DitambahkanPada'];
 
+    public $nama_kategori = 'a';
+
     const CREATED_AT = 'DitambahkanPada';
     const UPDATED_AT = 'DiupdatePada';
 

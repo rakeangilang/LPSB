@@ -17,8 +17,9 @@ class KatalogController extends Controller
     	return response()->json([
     		'success'=>true,
             'message'=>'Semua kategori berhasil diambil',
-    		'katalogs'=>$katalogs
-    		]);
+    		'katalogs'=>$katalogs,
+            'Status' => 200
+    		], 200);
     }
 
     public function getKatalogByID($id_katalog)
@@ -60,7 +61,8 @@ class KatalogController extends Controller
             'Simplisia'=>$simplisia,
             'Cairan'=>$cairan,
             'Serbuk'=>$serbuk,
-            ]);
+            'Status' => 200
+            ], 200);
     }
 
     public function getAllKategori()
@@ -70,8 +72,9 @@ class KatalogController extends Controller
         return response()->json([
             'success'=>true,
             'message'=>'Semua kategori berhasil diambil',
-            'kategoris'=>$kategoris
-            ]);
+            'kategoris'=>$kategoris,
+            "Status" => 200
+            ], 200);
     }
 
     public function getKatalogByKategori($id_kategori)
@@ -80,13 +83,17 @@ class KatalogController extends Controller
 
         foreach($katalogs as $katalog){
             $BentukSampel = $katalog->BentukSampel;
+            $NamaKategori = Kategori::select('Kategori')->where('IDKategori', $katalog->IDKategori)->first();
+            $NamaKategori = $katalog->setAttribute('NamaKategori', $NamaKategori->Kategori);
         }
         
         return response()->json([
             'success'=>true,
             'message'=>'Katalog sesuai kategori berhasil diambil',
-            'katalogs'=>$katalogs
-            ]);
+            'katalogs'=>$katalogs,
+            'NamaKategori' => $NamaKategori,
+            'Status' => 200
+            ], 200);
     }
 
     public function getBentukHargaByKatalog($id_katalog)
@@ -110,8 +117,9 @@ class KatalogController extends Controller
             'Cairan'=>$cairan,
             'Serbuk'=>$serbuk,
             'HargaIPB'=>$harga_ipb,
-            'HargaNONIPB'=>$harga_nonipb
-            ]);
+            'HargaNONIPB'=>$harga_nonipb,
+            'Status' => 200
+            ], 200);
     }
 
     

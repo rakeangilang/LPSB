@@ -20,7 +20,8 @@ class PelangganController extends Controller
             'message'=>'Informasi rekening berhasil diambil',
     		'NamaRekening' => $nama_rekening,
     		'NamaBank' => $nama_bank,
-    		'NoRekening' => $no_rekening
-    		]);
+    		'NoRekening' => $no_rekening,
+            'Status' => 200
+    		], 200);
     }
 }

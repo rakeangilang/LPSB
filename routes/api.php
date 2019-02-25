@@ -28,5 +28,9 @@ Route::get('/getKatalogByKategori/{id_kategori}', 'KatalogController@getKatalogB
 Route::get('/getBentukHargaSampel/{id_katalog}', 'KatalogController@getBentukHargaByKatalog')->middleware('auth:api');
 Route::get('/getKatalog/{id_katalog}', 'KatalogController@getKatalogByID')->middleware('auth:api');
 
+// Keranjang
+Route::post('/tambahItemKeranjang', 'KeranjangController@tambahItem')->middleware('auth:api');
+Route::get('/getKeranjang', 'KeranjangController@getKeranjang')->middleware('auth:api');
+
 // Pelanggan
 Route::get('/getInfoRekening', 'PelangganController@getInfoRekening')->middleware('auth:api');
