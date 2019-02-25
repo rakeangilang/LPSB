@@ -23,4 +23,9 @@ class Katalog extends Model
     public function Kategori(){
     	return $this->belongsTo('App\Kategori', 'IDKategori', 'IDKategori');
     }
+
+    public function Keranjang(){
+        return $this->hasMany('App\Keranjang', 'IDKatalog', 'IDKatalog');
+    }
+
 }

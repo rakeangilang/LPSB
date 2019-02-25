@@ -34,3 +34,6 @@ Route::get('/getKeranjang', 'KeranjangController@getKeranjang')->middleware('aut
 
 // Pelanggan
 Route::get('/getInfoRekening', 'PelangganController@getInfoRekening')->middleware('auth:api');
+Route::get('/getProfil', 'PelangganController@getProfil')->middleware('auth:api');
+Route::post('/simpanProfil', 'PelangganController@simpanProfil')->middleware('auth:api');
+Route::post('/simpanRekening', 'PelangganController@simpanRekening')->middleware('auth:api');

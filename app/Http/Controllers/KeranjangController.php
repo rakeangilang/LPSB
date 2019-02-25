@@ -13,12 +13,11 @@ class KeranjangController extends Controller
     public function tambahItem(User $user, Request $request)
     {
     	$pelanggan = $request->user()->IDPelanggan;
-    	$jenis_sampel = $request['JenisSampel'];
+    	$id_katalog = $request['IDKatalog'];
+        $jenis_sampel = $request['JenisSampel'];
     	$bentuk_sampel = $request['BentukSampel'];
     	$kemasan = $request['Kemasan'];
     	$jumlah = $request['Jumlah'];
-    	$jenis_metode_analisis = $request['JenisMetodeAnalisis'];
-    	$harga_sampel = $request['HargaSampel'];
 
     	Keranjang::create([
     		'IDPelanggan' => $pelanggan,
@@ -26,8 +25,7 @@ class KeranjangController extends Controller
     		'BentukSampel' => $bentuk_sampel,
     		'Kemasan' => $kemasan,
     		'Jumlah' => $jumlah,
-    		'JenisMetodeAnalisis' => $jenis_metode_analisis,
-    		'HargaSampel' => $harga_sampel
+            'IDKatalog' => $id_katalog
     		]);
 
     	return response()->json([
@@ -40,7 +38,15 @@ class KeranjangController extends Controller
     public function getKeranjang(User $user, Request $request)
     {
     	$id_pelanggan = $request->user()->IDPelanggan;
-    	$keranjang = Keranjang::where('StatusKeranjang', 1)->where('IDPelanggan', $id_pelanggan)->get();
+    	$keranjangs = Keranjang::where('StatusKeranjang', 1)->where('IDPelanggan', $id_pelanggan)->get();
+
+        foreach($keranjangs as $keranjang){
+            $katalog = Katalog::select('JenisAnalisis', 'Metode', 'HargaIPB', 'HargaNONIPB')->where('IDKatalog', $keranjang->IDKatalog)->first();
+            $keranjang->setAttribute('JenisAnalisis', $katalog->JenisAnalisis);
+            $keranjang->setAttribute('Metode', $katalog->Metode);
+            $keranjang->setAttribute('HargaIPB', $katalog->HargaIPB);
+            $keranjang->setAttribute('HargaNONIPB', $katalog->HargaNONIPB);
+        }
 
     	return response()->json([
     		'success'=>true,
