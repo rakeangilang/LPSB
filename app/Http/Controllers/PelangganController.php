@@ -54,6 +54,7 @@ class PelangganController extends Controller
     {
         $nama = $request->Nama;
         $email = $request->Email;
+        $api_token = $request->api_token;
         $perusahaan = $request->Perusahaan;
         $alamat = $request->Alamat;
         $no_hp = $request->NoHP;
@@ -77,6 +78,7 @@ class PelangganController extends Controller
             'message'=>'Informasi pengguna berhasil disimpan',
             'Nama' => $nama,
             'Email' => $email,
+            'api_token' => $api_token,
             'Perusahaan' => $perusahaan,
             'Alamat' => $alamat,
             'NoHP' => $no_hp,
