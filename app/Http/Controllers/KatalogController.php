@@ -96,14 +96,14 @@ class KatalogController extends Controller
         foreach($katalogs as $katalog){
             $BentukSampel = $katalog->BentukSampel;
             $NamaKategori = Kategori::select('Kategori')->where('IDKategori', $katalog->IDKategori)->first();
-            $NamaKategori = $katalog->setAttribute('NamaKategori', $NamaKategori->Kategori);
+            //$NamaKategori = $katalog->setAttribute('NamaKategori', $NamaKategori->Kategori);
         }
         
         return response()->json([
             'success'=>true,
             'message'=>'Katalog sesuai kategori berhasil diambil',
             'katalogs'=>$katalogs,
-            'NamaKategori' => $NamaKategori,
+            'NamaKategori' => $NamaKategori->Kategori,
             'Status' => 200
             ], 200);
     }
