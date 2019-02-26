@@ -62,9 +62,6 @@ class ApiAuthController extends Controller
         $alamat = $user->Alamat;
         $nohp = $user->NoHP;
         $no_identitas = $user->NoIdentitas;
-        $nama_rekening = $user->NamaRekening;
-        $nama_bank = $user->NamaBank;
-        $no_rekening = $user->NoRekening;
 
       return response()->json([
           'success' => true,
@@ -77,9 +74,6 @@ class ApiAuthController extends Controller
           'Alamat' => $alamat,
           'NoHP' => $nohp,
           'NoIdentitas' => $no_identitas,
-          'NamaRekening' => $nama_rekening,
-          'NamaBank' => $nama_bank,
-          'NoRekening' => $no_rekening,
           'Status' => 200
         ], 200);
     }

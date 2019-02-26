@@ -22,6 +22,18 @@ class KatalogController extends Controller
     		], 200);
     }
 
+    public function getAllKatalogUmum()
+    {
+        $katalogs = Katalog::select('IDKatalog', 'JenisAnalisis', 'FotoKatalog', 'HargaIPB', 'HargaNONIPB')->get();
+
+        return response()->json([
+            'success'=>true,
+            'message'=>'Semua kategori berhasil diambil',
+            'katalogs'=>$katalogs,
+            'Status' => 200
+            ], 200);
+    }
+
     public function getKatalogByID($id_katalog)
     {
         $katalog = Katalog::find($id_katalog);
@@ -92,6 +104,23 @@ class KatalogController extends Controller
             'message'=>'Katalog sesuai kategori berhasil diambil',
             'katalogs'=>$katalogs,
             'NamaKategori' => $NamaKategori,
+            'Status' => 200
+            ], 200);
+    }
+
+    public function getKatalogByKategoriUmum($id_kategori)
+    {
+        $katalogs = Katalog::select('IDKatalog', 'IDKategori', 'JenisAnalisis', 'FotoKatalog', 'HargaIPB', 'HargaNONIPB')->where('IDKategori', $id_kategori)->get();
+
+        foreach($katalogs as $katalog){
+            $NamaKategori = Kategori::select('Kategori')->where('IDKategori', $katalog->IDKategori)->first();
+            $katalog->setAttribute('NamaKategori', $NamaKategori->Kategori);
+        }
+        
+        return response()->json([
+            'success'=>true,
+            'message'=>'Katalog sesuai kategori berhasil diambil',
+            'katalogs'=>$katalogs,
             'Status' => 200
             ], 200);
     }

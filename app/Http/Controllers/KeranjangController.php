@@ -51,7 +51,7 @@ class KeranjangController extends Controller
     	return response()->json([
     		'success'=>true,
             'message'=>'Item di keranjang berhasil diambil',
-            'keranjang'=>$keranjang,
+            'keranjang'=>$keranjangs,
             'Status' => 200
     		], 200);
     }

@@ -23,8 +23,10 @@ Route::post('/login', 'ApiAuthController@login');
 
 // Katalog
 Route::get('/getAllKatalog', 'KatalogController@getAllKatalog')->middleware('auth:api');
+Route::get('/getAllKatalogUmum', 'KatalogController@getAllKatalogUmum')->middleware('auth:api');
 Route::get('/getAllKategori', 'KatalogController@getAllKategori')->middleware('auth:api');
 Route::get('/getKatalogByKategori/{id_kategori}', 'KatalogController@getKatalogByKategori')->middleware('auth:api');
+Route::get('/getKatalogByKategoriUmum/{id_kategori}', 'KatalogController@getKatalogByKategoriUmum')->middleware('auth:api');
 Route::get('/getBentukHargaSampel/{id_katalog}', 'KatalogController@getBentukHargaByKatalog')->middleware('auth:api');
 Route::get('/getKatalog/{id_katalog}', 'KatalogController@getKatalogByID')->middleware('auth:api');
 
