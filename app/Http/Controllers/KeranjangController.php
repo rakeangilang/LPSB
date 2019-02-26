@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use App\Keranjang;
 use App\User;
 use App\Katalog;
+use App\Pesanan;
 
 class KeranjangController extends Controller
 {
@@ -68,4 +69,6 @@ class KeranjangController extends Controller
             'Status' => 200
             ], 200);
     }
+
+    
 }

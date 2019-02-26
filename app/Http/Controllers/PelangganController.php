@@ -33,6 +33,7 @@ class PelangganController extends Controller
         $perusahaan = $pelanggan->Perusahaan;
         $alamat = $pelanggan->Alamat;
         $no_hp = $pelanggan->NoHP;
+        $no_identitas = $pelanggan->NoIdentitas;
         $no_npwp = $pelanggan->NoNPWP;
 
         return response()->json([
@@ -43,6 +44,7 @@ class PelangganController extends Controller
             'Perusahaan' => $perusahaan,
             'Alamat' => $alamat,
             'NoHP' => $no_hp,
+            'NoIdentitas' => $no_identitas,
             'NoNPWP' => $no_npwp,
             'Status' => 200
             ], 200);
@@ -55,6 +57,7 @@ class PelangganController extends Controller
         $perusahaan = $request->Perusahaan;
         $alamat = $request->Alamat;
         $no_hp = $request->NoHP;
+        $no_identitas = $request->NoIdentitas;
         $no_npwp = $request->NoNPWP;
 
         $id_pelanggan = $request->user()->IDPelanggan;
@@ -65,12 +68,20 @@ class PelangganController extends Controller
                 'Perusahaan' => $perusahaan,
                 'Alamat' => $alamat,
                 'NoHP' => $no_hp,
+                'NoIdentitas' => $no_identitas,
                 'NoNPWP' => $no_npwp
             ]);
 
         return response()->json([
             'success'=>true,
             'message'=>'Informasi pengguna berhasil disimpan',
+            'Nama' => $nama,
+            'Email' => $email,
+            'Perusahaan' => $perusahaan,
+            'Alamat' => $alamat,
+            'NoHP' => $no_hp,
+            'NoIdentitas' => $no_identitas,
+            'NoNPWP' => $no_npwp,
             'Status' => 200
             ], 200);
     }
