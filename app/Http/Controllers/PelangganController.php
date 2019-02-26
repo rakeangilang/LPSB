@@ -10,23 +10,29 @@ class PelangganController extends Controller
     //
     public function getInfoRekening(User $user, Request $request)
     {
-    	$pelanggan = $request->user();
-    	$nama_rekening = $pelanggan->NamaRekening;
-    	$nama_bank = $pelanggan->NamaBank;
-    	$no_rekening = $pelanggan->NoRekening;
+        try{
+        $pelanggan = $request->user();
+        $nama_rekening = $pelanggan->NamaRekening;
+        $nama_bank = $pelanggan->NamaBank;
+        $no_rekening = $pelanggan->NoRekening;
 
-    	return response()->json([
-    		'success'=>true,
+        return response()->json([
+            'success'=>true,
             'message'=>'Informasi rekening berhasil diambil',
-    		'NamaRekening' => $nama_rekening,
-    		'NamaBank' => $nama_bank,
-    		'NoRekening' => $no_rekening,
+            'NamaRekening' => $nama_rekening,
+            'NamaBank' => $nama_bank,
+            'NoRekening' => $no_rekening,
             'Status' => 200
-    		], 200);
+            ], 200);
+        }
+        catch(\Exception $e){
+            return response()->json(['success'=>false, 'message'=>$e->getMessage(),'Status'=>500], 500);
+        }
     }
 
     public function getProfil(User $user, Request $request)
     {
+        try{
         $pelanggan = $request->user();
         $nama = $pelanggan->Nama;
         $email = $pelanggan->Email;
@@ -48,10 +54,15 @@ class PelangganController extends Controller
             'NoNPWP' => $no_npwp,
             'Status' => 200
             ], 200);
+        }
+        catch(\Exception $e){
+            return response()->json(['success'=>false, 'message'=>$e->getMessage(),'Status'=>500], 500);
+        }
     }
 
     public function simpanProfil(User $user, Request $request)
     {
+        try{
         $nama = $request->Nama;
         $email = $request->Email;
         $api_token = $request->api_token;
@@ -86,10 +97,15 @@ class PelangganController extends Controller
             'NoNPWP' => $no_npwp,
             'Status' => 200
             ], 200);
+        }
+        catch(\Exception $e){
+            return response()->json(['success'=>false, 'message'=>$e->getMessage(),'Status'=>500], 500);
+        }
     }
 
     public function simpanRekening(User $user, Request $request)
     {
+        try{
         $nama_rekening = $request->NamaRekening;
         $nama_bank = $request->NamaBank;
         $no_rekening = $request->NoRekening;
@@ -110,5 +126,9 @@ class PelangganController extends Controller
             'NoRekening' => $no_rekening,
             'Status' => 200
             ], 200);
+        }
+        catch(\Exception $e){
+            return response()->json(['success'=>false, 'message'=>$e->getMessage(),'Status'=>500], 500);
+        }
     }
 }

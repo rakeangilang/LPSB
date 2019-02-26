@@ -12,19 +12,8 @@ class KatalogController extends Controller
     // ambil daftar katalog
     public function getAllKatalog()
     {
-    	$katalogs = Katalog::all();
-
-    	return response()->json([
-    		'success'=>true,
-            'message'=>'Semua kategori berhasil diambil',
-    		'katalogs'=>$katalogs,
-            'Status' => 200
-    		], 200);
-    }
-
-    public function getAllKatalogUmum()
-    {
-        $katalogs = Katalog::select('IDKatalog', 'JenisAnalisis', 'FotoKatalog', 'HargaIPB', 'HargaNONIPB')->get();
+        try{
+            $katalogs = Katalog::all();
 
         return response()->json([
             'success'=>true,
@@ -32,10 +21,32 @@ class KatalogController extends Controller
             'katalogs'=>$katalogs,
             'Status' => 200
             ], 200);
+        }
+        catch(\Exception $e){
+            return response()->json(['success'=>false, 'message'=>$e->getMessage(),'Status'=>500], 500);
+        }
+    }
+
+    public function getAllKatalogUmum()
+    {
+        try{
+            $katalogs = Katalog::select('IDKatalog', 'JenisAnalisis', 'FotoKatalog', 'HargaIPB', 'HargaNONIPB')->get();
+
+        return response()->json([
+            'success'=>true,
+            'message'=>'Semua kategori berhasil diambil',
+            'katalogs'=>$katalogs,
+            'Status' => 200
+            ], 200);
+        }
+        catch(\Exception $e){
+            return response()->json(['success'=>false, 'message'=>$e->getMessage(),'Status'=>500], 500);
+        }
     }
 
     public function getKatalogByID($id_katalog)
     {
+        try{
         $katalog = Katalog::find($id_katalog);
         $id_katalog = $katalog->IDKatalog;
         $id_kategori = $katalog->IDKategori;
@@ -54,7 +65,6 @@ class KatalogController extends Controller
         $simplisia = $bentuk->Simplisia;
         $cairan = $bentuk->Cairan;
         $serbuk = $bentuk->Serbuk;
-
 
         return response()->json([
             'success'=>true,
@@ -75,11 +85,16 @@ class KatalogController extends Controller
             'Serbuk'=>$serbuk,
             'Status' => 200
             ], 200);
+        }
+        catch(\Exception $e){
+            return response()->json(['success'=>false, 'message'=>$e->getMessage(),'Status'=>500], 500);
+        }        
     }
 
     public function getAllKategori()
     {
-        $kategoris = Kategori::all();
+        try{
+            $kategoris = Kategori::all();
 
         return response()->json([
             'success'=>true,
@@ -87,10 +102,21 @@ class KatalogController extends Controller
             'kategoris'=>$kategoris,
             "Status" => 200
             ], 200);
+        }
+        catch(\Exception $e){
+            return response()->json(['success'=>false, 'message'=>$e->getMessage(),'Status'=>500], 500);
+        }
+        
     }
 
     public function getKatalogByKategori($id_kategori)
     {
+        try{
+
+        }
+        catch(\Exception $e){
+            return response()->json(['success'=>false, 'message'=>$e->getMessage(),'Status'=>500], 500);
+        }
         $katalogs = Katalog::where('IDKategori', $id_kategori)->get();
 
         foreach($katalogs as $katalog){
@@ -110,7 +136,8 @@ class KatalogController extends Controller
 
     public function getBentukHargaByKatalog($id_katalog)
     {
-        $bentuk = BentukSampel::where('IDKatalog', $id_katalog)->first();
+        try{
+            $bentuk = BentukSampel::where('IDKatalog', $id_katalog)->first();
         $harga = Katalog::where('IDKatalog', $id_katalog)->first();
         $harga_ipb = $harga->HargaIPB;
         $harga_nonipb = $harga->HargaNONIPB;
@@ -132,7 +159,16 @@ class KatalogController extends Controller
             'HargaNONIPB'=>$harga_nonipb,
             'Status' => 200
             ], 200);
-    }
-
-    
+        }
+        catch(\Exception $e){
+            return response()->json(['success'=>false, 'message'=>$e->getMessage(),'Status'=>500], 500);
+        }
+    }    
 }
+
+try{
+    
+        }
+        catch(\Exception $e){
+            return response()->json(['success'=>false, 'message'=>$e->getMessage(),'Status'=>500], 500);
+        }
