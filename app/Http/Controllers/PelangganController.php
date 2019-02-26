@@ -92,6 +92,9 @@ class PelangganController extends Controller
         return response()->json([
             'success'=>true,
             'message'=>'Informasi rekening berhasil disimpan',
+            'NamaRekening' => $nama_rekening,
+            'NamaBank' => $nama_bank,
+            'NoRekening' => $no_rekening,
             'Status' => 200
             ], 200);
     }

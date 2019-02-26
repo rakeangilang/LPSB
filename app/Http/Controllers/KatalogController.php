@@ -108,23 +108,6 @@ class KatalogController extends Controller
             ], 200);
     }
 
-    public function getKatalogByKategoriUmum($id_kategori)
-    {
-        $katalogs = Katalog::select('IDKatalog', 'IDKategori', 'JenisAnalisis', 'FotoKatalog', 'HargaIPB', 'HargaNONIPB')->where('IDKategori', $id_kategori)->get();
-
-        foreach($katalogs as $katalog){
-            $NamaKategori = Kategori::select('Kategori')->where('IDKategori', $katalog->IDKategori)->first();
-            $katalog->setAttribute('NamaKategori', $NamaKategori->Kategori);
-        }
-        
-        return response()->json([
-            'success'=>true,
-            'message'=>'Katalog sesuai kategori berhasil diambil',
-            'katalogs'=>$katalogs,
-            'Status' => 200
-            ], 200);
-    }
-
     public function getBentukHargaByKatalog($id_katalog)
     {
         $bentuk = BentukSampel::where('IDKatalog', $id_katalog)->first();

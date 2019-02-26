@@ -55,4 +55,17 @@ class KeranjangController extends Controller
             'Status' => 200
     		], 200);
     }
+
+    public function hapusItem(User $user, Request $request)
+    {
+        $id_item = $request->IDItem;
+        $id_user = $request->user()->IDPelanggan;
+        $hapus = Keranjang::where('IDItem', $id_item)->where('IDPelanggan', $id_user)->delete();
+
+        return response()->json([
+            'success'=>true,
+            'message'=>'Item berhasil dihapus dari keranjang',
+            'Status' => 200
+            ], 200);
+    }
 }

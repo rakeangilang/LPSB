@@ -26,13 +26,13 @@ Route::get('/getAllKatalog', 'KatalogController@getAllKatalog')->middleware('aut
 Route::get('/getAllKatalogUmum', 'KatalogController@getAllKatalogUmum')->middleware('auth:api');
 Route::get('/getAllKategori', 'KatalogController@getAllKategori')->middleware('auth:api');
 Route::get('/getKatalogByKategori/{id_kategori}', 'KatalogController@getKatalogByKategori')->middleware('auth:api');
-Route::get('/getKatalogByKategoriUmum/{id_kategori}', 'KatalogController@getKatalogByKategoriUmum')->middleware('auth:api');
 Route::get('/getBentukHargaSampel/{id_katalog}', 'KatalogController@getBentukHargaByKatalog')->middleware('auth:api');
 Route::get('/getKatalog/{id_katalog}', 'KatalogController@getKatalogByID')->middleware('auth:api');
 
 // Keranjang
 Route::post('/tambahItemKeranjang', 'KeranjangController@tambahItem')->middleware('auth:api');
 Route::get('/getKeranjang', 'KeranjangController@getKeranjang')->middleware('auth:api');
+Route::post('/hapusItem', 'KeranjangController@hapusItem')->middleware('auth:api');
 
 // Pelanggan
 Route::get('/getInfoRekening', 'PelangganController@getInfoRekening')->middleware('auth:api');

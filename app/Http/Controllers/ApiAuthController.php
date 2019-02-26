@@ -62,6 +62,7 @@ class ApiAuthController extends Controller
         $alamat = $user->Alamat;
         $nohp = $user->NoHP;
         $no_identitas = $user->NoIdentitas;
+        $no_npwp = $user->NoNPWP
 
       return response()->json([
           'success' => true,
@@ -74,6 +75,7 @@ class ApiAuthController extends Controller
           'Alamat' => $alamat,
           'NoHP' => $nohp,
           'NoIdentitas' => $no_identitas,
+          'NoNPWP' => $no_npwp,
           'Status' => 200
         ], 200);
     }
