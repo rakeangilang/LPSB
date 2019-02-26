@@ -38,7 +38,7 @@ class KeranjangController extends Controller
     public function getKeranjang(User $user, Request $request)
     {
     	$id_pelanggan = $request->user()->IDPelanggan;
-    	$keranjangs = Keranjang::where('StatusKeranjang', 1)->where('IDPelanggan', $id_pelanggan)->get();
+    	$keranjangs = Keranjang::where('IDPelanggan', $id_pelanggan)->get();
 
         foreach($keranjangs as $keranjang){
             $katalog = Katalog::select('JenisAnalisis', 'Metode', 'HargaIPB', 'HargaNONIPB')->where('IDKatalog', $keranjang->IDKatalog)->first();
