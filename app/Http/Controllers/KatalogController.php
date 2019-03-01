@@ -112,12 +112,7 @@ class KatalogController extends Controller
     public function getKatalogByKategori($id_kategori)
     {
         try{
-
-        }
-        catch(\Exception $e){
-            return response()->json(['success'=>false, 'message'=>$e->getMessage(),'Status'=>500], 500);
-        }
-        $katalogs = Katalog::where('IDKategori', $id_kategori)->get();
+            $katalogs = Katalog::where('IDKategori', $id_kategori)->get();
 
         foreach($katalogs as $katalog){
             $BentukSampel = $katalog->BentukSampel;
@@ -132,6 +127,11 @@ class KatalogController extends Controller
             'NamaKategori' => $NamaKategori->Kategori,
             'Status' => 200
             ], 200);
+        }
+        catch(\Exception $e){
+            return response()->json(['success'=>false, 'message'=>$e->getMessage(),'Status'=>500], 500);
+        }
+        
     }
 
     public function getBentukHargaByKatalog($id_katalog)
@@ -166,8 +166,8 @@ class KatalogController extends Controller
     }    
 }
 
-try{
-    
+        try{
+            
         }
         catch(\Exception $e){
             return response()->json(['success'=>false, 'message'=>$e->getMessage(),'Status'=>500], 500);

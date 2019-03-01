@@ -9,7 +9,7 @@ class Pesanan extends Model
     //
     protected $table = 'pesanan';
     protected $primaryKey = 'IDPesanan';
-    protected $guarded = ['IDPesanan', 'IDPelanggan', 'WaktuPemesanan'];
+    protected $guarded = ['IDPesanan'];
 
     const CREATED_AT = 'WaktuPemesanan';
     const UPDATED_AT = null;

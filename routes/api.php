@@ -33,6 +33,7 @@ Route::get('/getKatalog/{id_katalog}', 'KatalogController@getKatalogByID')->midd
 Route::post('/tambahItemKeranjang', 'KeranjangController@tambahItem')->middleware('auth:api');
 Route::get('/getKeranjang', 'KeranjangController@getKeranjang')->middleware('auth:api');
 Route::post('/hapusItem', 'KeranjangController@hapusItem')->middleware('auth:api');
+Route::post('/pesanItem', 'KeranjangController@pesanItem')->middleware('auth:api');
 
 // Pelanggan
 Route::get('/getInfoRekening', 'PelangganController@getInfoRekening')->middleware('auth:api');
