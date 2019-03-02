@@ -63,16 +63,16 @@ class PelangganController extends Controller
     public function simpanProfil(User $user, Request $request)
     {
         try{
+        $id_pelanggan = $request->user()->IDPelanggan;
+        $api_token = $request->user()->api_token;
+
         $nama = $request->Nama;
         $email = $request->Email;
-        $api_token = $request->api_token;
         $perusahaan = $request->Perusahaan;
         $alamat = $request->Alamat;
         $no_hp = $request->NoHP;
         $no_identitas = $request->NoIdentitas;
         $no_npwp = $request->NoNPWP;
-
-        $id_pelanggan = $request->user()->IDPelanggan;
 
         User::where('IDPelanggan', $id_pelanggan)->update([
                 'Nama' => $nama,
