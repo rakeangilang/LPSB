@@ -47,26 +47,27 @@ class Helper
         }
     }
 
-    public function newAdministrasiPesanan($data_user, $id_pesanan)
+    public function newAdministrasiPesanan($data_user, $data_rek, $id_pesanan, $keterangan)
     {
         try
         {
          	// buat administrasi pesanan
         	$z = AdministrasiPesanan::create([
         		'IDPesanan' => $id_pesanan,
-        		'NamaLengkap' => $data_user['NamaLengkap'],
-        		'Institusi' => $data_user['Institusi'],
+        		'NamaLengkap' => $data_user['Nama'],
+        		'Institusi' => $data_user['Perusahaan'],
         		'Alamat' => $data_user['Alamat'],
         		'NoHP' => $data_user['NoHP'],
         		'Email' => $data_user['Email'],
         		'NoNPWP' => $data_user['NoNPWP'],
-        		'NamaRekening' => $data_user['NamaRekening'],
-        		'NamaBank' => $data_user['NamaBank'],
-        		'NoRekening' => $data_user['NoRekening']
+        		'NamaRekening' => $data_rek['NamaRekening'],
+        		'NamaBank' => $data_rek['NamaBank'],
+        		'NoRekening' => $data_rek['NoRekening'],
+        		'KeteranganPesanan' => $keterangan
         		]);
         	//{"NamaLengkap": "Gilang", "Institusi": "IPB", "Alamat": "bogor", "NoHP": "999", "Email": "ganteng@banget.com", "NoNPWP": "9182938", "NamaRekening": "h3h3", "NamaBank": "jabar", "NoRekening": "231992"}
 
- //       	{"data_user": {"NamaLengkap": "Gilang", "Institusi": "IPB", "Alamat": "bogor", "NoHP": "999", "Email": "ganteng@banget.com", "NoNPWP": "9182938", "NamaRekening": "h3h3", "NamaBank": "jabar", "NoRekening": "231992"}, "listKeranjang": [{"a": 1}, {"b":2}], "lama_pengujian": 1, "sisa_sampel": 1, "harga_total": 8888}
+ //       	{"data_user": {"Nama": "Gilang", "Perusahaan": "IPB", "Alamat": "bogor", "NoHP": "999", "Email": "ganteng@banget.com", "NoNPWP": "9182938"}, "data_rek": {"NamaRekening": "h3h3", "NamaBank": "jabar", "NoRekening": "231992"}, "listKeranjang": [{"IDItem": 1, "JenisSampel": "Daun", "BentukSampel": "Ekstrak", "Kemasan": "Toples", "Jumlah": "5", "JenisAnalisis": "Fitokimia", "Metode": "Visualisasi warna", "Harga": 175000}], "lama_pengujian": 1, "sisa_sampel": 1, "harga_total": 8888, "keterangan": "haha"}
 
         	return 0;
         }
@@ -121,7 +122,7 @@ class Helper
         					->latest()
         					->first();
 
-        		$count = Sampel::max('NoSampel')->where('IDPesanan', $pesanan_terakhir);
+        		$count = Sampel::where('IDPesanan', $pesanan_terakhir)->max('NoSampel');
         	}
         	else {
         		$count = 0;
@@ -130,7 +131,7 @@ class Helper
         	$no_sampel = $count + 1;      	
 
             // create new sampels
-            // [{"IDItem": 1, "JenisSampel": "Daun", "BentukSampel": "Ekstrak", "Kemasan": "Toples", "Jumlah": 5, "JenisAnalisis": "Fitokimia", "Metode": "Visualisasi warna", "HargaSampel": 175000}]
+            // [{"IDItem": 1, "JenisSampel": "Daun", "BentukSampel": "Ekstrak", "Kemasan": "Toples", "Jumlah": 5, "JenisAnalisis": "Fitokimia", "Metode": "Visualisasi warna", "Harga": 175000}]
             foreach($list_keranjang as $item){
 
             	Sampel::create([
@@ -142,7 +143,7 @@ class Helper
             		'Jumlah' => $item['Jumlah'],
             		'JenisAnalisis' => $item['JenisAnalisis'],
             		'Metode' => $item['Metode'],
-            		'HargaSampel' => $item['HargaSampel']
+            		'HargaSampel' => $item['Harga']
             		]);
 
             	$hapus = Keranjang::where('IDItem', $item['IDItem'])->where('IDPelanggan', $id_pelanggan)->delete();

@@ -94,11 +94,13 @@ class KeranjangController extends Controller
             $id_pelanggan = $request->user()->IDPelanggan;
             $list_keranjang = $request->listKeranjang;
             $data_user = $request->data_user;
+            $data_rek = $request->data_rek;
+            $keterangan = $request->KeteranganPesanan;
 
         // buat pesanan then get IDPesanan
             $id_pesanan = Helper::instance()->newPesanan($request, $id_pelanggan);
         // buat administrasi pesanan
-            $make_administrasi = Helper::instance()->newAdministrasiPesanan($data_user, $id_pesanan);
+            $make_administrasi = Helper::instance()->newAdministrasiPesanan($data_user, $data_rek, $id_pesanan, $keterangan);
         // buat dokumen pesanan
             $make_dokumen = Helper::instance()->newDokumenPesanan($id_pesanan);
         // buat pelacakan
