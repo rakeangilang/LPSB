@@ -15,9 +15,10 @@ class PesananController extends Controller
     //
     public function getPesanan(Request $request, User $user)
     {
-    	$id_pelanggan = $request->user()->IDPelanggan;
-    	$pesananss = Pesanan::select('IDPesanan', 'TotalHarga', 'Ulasan')->where('IDPelanggan', $id_pelanggan)->get();
-    	$pesanans = $pesananss;
+    	try{
+    		$id_pelanggan = $request->user()->IDPelanggan;
+    		$pesananss = Pesanan::select('IDPesanan', 'TotalHarga', 'Ulasan')->where('IDPelanggan', $id_pelanggan)->get();
+    		$pesanans = $pesananss;
 
     	foreach($pesanans as $pesanan)
     	{
@@ -51,11 +52,13 @@ class PesananController extends Controller
     		}
 
     		$pesanan->setAttribute('Sampel', $sampels);
-    		$pesanan->setAttribute('x', gettype($pesanan));
-    		unset($pesanan->Ulasan);
-    		unset($pesanan->TotalHarga);
     	}
 
-    	return response()->json(['AllPesanan'=>$pesanans, 'a'=>gettype($pesanans)]);
+    	return response()->json(['success'=>true, 'AllPesanan'=>$pesanans, 'Status'=>200], 200);
+        }
+        catch(\Exception $e){
+            return response()->json(['success'=>false, 'message'=>$e->getMessage(),'Status'=>500], 500);
+        }
+    	
     }
 }
