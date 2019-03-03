@@ -17,4 +17,8 @@ class Pesanan extends Model
     public function Pelanggan(){
     	return $this->belongsTo('App\Pelanggan', 'IDPelanggan', 'IDPelanggan');
     }
+
+    public function Sampel(){
+    	return $this->hasMany('App\Sampel','IDPesanan','IDPesanan');
+    }
 }
