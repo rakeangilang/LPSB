@@ -104,6 +104,13 @@ class Helper
         catch(\Exception $e){
             return 500;
         }
+
+        try{
+            
+        }
+        catch(\Exception $e) {
+            return response()->json(['success'=>false, 'message'=>$e->getMessage(),'Status'=>500], 500);
+        }
     }
 
     public function addSampels($list_keranjang, $id_pesanan, $id_pelanggan)
@@ -131,12 +138,13 @@ class Helper
         	$no_sampel = $count + 1;      	
 
             // create new sampels
-            // [{"IDItem": 1, "JenisSampel": "Daun", "BentukSampel": "Ekstrak", "Kemasan": "Toples", "Jumlah": 5, "JenisAnalisis": "Fitokimia", "Metode": "Visualisasi warna", "Harga": 175000}]
+            // [{"IDItem": 1, "IDKatalog": 1, "JenisSampel": "Daun", "BentukSampel": "Ekstrak", "Kemasan": "Toples", "Jumlah": 5, "JenisAnalisis": "Fitokimia", "Metode": "Visualisasi warna", "Harga": 175000}]
             foreach($list_keranjang as $item){
 
             	Sampel::create([
             		'IDPesanan' => $id_pesanan,
             		'NoSampel' => $no_sampel++,
+                    'IDKatalog' => $item['IDKatalog'],
             		'JenisSampel' => $item['JenisSampel'],
             		'BentukSampel' => $item['BentukSampel'],
             		'Kemasan' => $item['Kemasan'],

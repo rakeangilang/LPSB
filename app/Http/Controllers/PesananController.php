@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Pesanan;
 use App\DokumenPesanan;
+use App\AdministrasiPesanan;
 use App\Pelacakan;
 use App\User;
 use App\Sampel;
@@ -61,4 +62,39 @@ class PesananController extends Controller
         }
     	
     }
+
+    public function beriUlasan(User $user, Request $request)
+    {
+        try{
+            $id_pelanggan = $request->user()->IDPelanggan;
+            $id_pesanan = $request->IDPesanan;
+            $ulasan = $request->Ulasan;
+
+            Pesanan::where('IDPesanan', $id_pesanan)->where('IDPelanggan', $id_pelanggan)->update([
+                'Ulasan' => $ulasan
+                ]);
+
+            return response()->json(['success'=>true, 'message'=>'Ulasan berhasil disimpan', 'Status'=>200], 200);
+        }
+        catch(\Exception $e) {
+            return response()->json(['success'=>false, 'message'=>$e->getMessage(),'Status'=>500], 500);
+        }
+    }
+
+    public function getUlasan(User $user, Request $request)
+    {
+        try{
+            $id_pelanggan = $request->user()->IDPelanggan;
+            $id_pesanan = $request->IDPesanan;
+
+            $ulasan = Pesanan::select('Ulasan')->where('IDPesanan', $id_pesanan)->where('IDPelanggan', $id_pelanggan)->first();
+
+            return response()->json(['success'=>true, 'Ulasan'=>$ulasan->Ulasan, 'Status'=>200], 200);
+        }
+        catch(\Exception $e) {
+            return response()->json(['success'=>false, 'message'=>$e->getMessage(),'Status'=>500], 500);
+        }
+    }
+
+
 }

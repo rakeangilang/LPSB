@@ -31,7 +31,7 @@ Route::get('/getKatalog/{id_katalog}', 'KatalogController@getKatalogByID')->midd
 
 // Keranjang
 Route::post('/tambahItemKeranjang', 'KeranjangController@tambahItem')->middleware('auth:api');
-Route::get('/getKeranjang', 'KeranjangController@getKeranjang')->middleware('auth:api');
+Route::get('/getKeranjang', 'KeranjangController@getKeranjang')->middleware('auth:api')->name('getKeranjang');
 Route::post('/hapusItem', 'KeranjangController@hapusItem')->middleware('auth:api');
 Route::post('/pesanItem', 'KeranjangController@pesanItem')->middleware('auth:api');
 
@@ -43,3 +43,9 @@ Route::post('/simpanRekening', 'PelangganController@simpanRekening')->middleware
 
 // Pesanan
 Route::get('/getPesanan', 'PesananController@getPesanan')->middleware('auth:api');
+Route::post('/beriUlasan', 'PesananController@beriUlasan')->middleware('auth:api');
+Route::post('/getUlasan', 'PesananController@getUlasan')->middleware('auth:api');
+
+// Pemberitahuan
+//Route::post('/setStatus', 'PemberitahuanController@setStatus')->middleware('auth:api');
+//Route::get('/newPemberitahuan/{pel}/{req}', 'PemberitahuanController@newPemberitahuan')->middleware('auth:api')->name('newPemberitahuan');

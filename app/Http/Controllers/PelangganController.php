@@ -132,3 +132,19 @@ class PelangganController extends Controller
         }
     }
 }
+public function detailPesanan(User $user, Request $request)
+    {
+        try{
+            $id_pelanggan = $request->user()->IDPelanggan;
+            $id_pesanan = $request->IDPesanan;
+            $pesanan = Pesanan::where('IDPesanan', $id_pesanan)->where('IDPelanggan', $id_pelanggan)->first();
+            $
+
+            $ulasan = Pesanan::select('Ulasan')->where('IDPesanan', $id_pesanan)->where('IDPelanggan', $id_pelanggan)->first();
+
+            return response()->json(['success'=>true, 'Ulasan'=>$ulasan->Ulasan, 'Status'=>200], 200);
+        }
+        catch(\Exception $e) {
+            return response()->json(['success'=>false, 'message'=>$e->getMessage(),'Status'=>500], 500);
+        }
+    }
