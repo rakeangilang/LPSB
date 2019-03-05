@@ -6,6 +6,8 @@ use Illuminate\Http\Request;
 use App\User;
 use App\Pesanan;
 use App\Pelacakan;
+use App\Pemberitahuan;
+use Carbon\Carbon;
 
 class PemberitahuanController extends Controller
 {
@@ -18,14 +20,27 @@ class PemberitahuanController extends Controller
     	$set_status = $request->SetStatus;
     	Pelacakan::where('IDPesanan', $id_pesanan)->update(['IDStatus' => $set_status]);
 
-    	$pelanggan = $request->user()->first();
-
-//    	return response()->json(['new status'=>$set_status]);
-    	return redirect()->route('newPemberitahuan', array('pel'=>$pelanggan, 'req'=>$request));
+    	//return response()->json(['new status'=>$set_status, 'pel'=>$pelanggan]);
+    	return redirect()->route('newPemberitahuan', ['pes'=>$id_pesanan,'stat'=>$set_status]);
     }
 
-    public function newPemberitahuan($pel, $req)
+    public function newPemberitahuan($pes, $stat)
     {
-    	return response()->json(['pel'=>$pel, 'req'=>$req]);
+        // if status cocok, buat pemberitahuan, kalo nggak gausah
+        $waktu = Carbon::now()->toDateTimeString();
+        $pemberitahuan = Pemberitahuan::create([
+            'IDPesanan'=>$pes,
+            'IDStatus'=>$stat,
+            'WaktuPemberitahuan'=>$waktu
+            ]);
+    	return response()->json(['pes'=>$pes, 'stat'=>$stat]);
+    }
+
+    public function getPemberitahuan(User $user, Request $request)
+    {
+        $id_pelanggan = $request->user()->IDPelanggan;
+        $pemberitahuans = Pemberitahuan::where('IDPelanggan', $id_pelanggan)->orderBy('WaktuPemberitahuan', 'desc')->get();
+
+        return response()->json(['Pemberitahuans'=>$pemberitahuans]);
     }
 }
