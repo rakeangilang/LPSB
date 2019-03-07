@@ -9,7 +9,7 @@ class Katalog extends Model
     //
     protected $table = 'katalog';
     protected $primaryKey = 'IDKatalog';
-    protected $guarded = ['IDKatalog', 'DitambahkanPada'];
+    protected $guarded = ['DitambahkanPada'];
 
     public $nama_kategori = 'a';
 

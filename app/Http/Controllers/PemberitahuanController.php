@@ -7,6 +7,7 @@ use App\User;
 use App\Pesanan;
 use App\Pelacakan;
 use App\Pemberitahuan;
+use App\StatusPelacakan;
 use Carbon\Carbon;
 
 class PemberitahuanController extends Controller
@@ -14,33 +15,73 @@ class PemberitahuanController extends Controller
     //
     public function setStatus(User $user, Request $request)
     {
-    	$id_pelanggan = $request->user()->IDPelanggan;
-    	$id_pesanan = Pesanan::select('IDPesanan')->where('IDPelanggan', $id_pelanggan)->where('IDPesanan', $request->IDPesanan)->first();
-    	$id_pesanan = $id_pesanan->IDPesanan;
-    	$set_status = $request->SetStatus;
-    	Pelacakan::where('IDPesanan', $id_pesanan)->update(['IDStatus' => $set_status]);
-
-    	//return response()->json(['new status'=>$set_status, 'pel'=>$pelanggan]);
-    	return redirect()->route('newPemberitahuan', ['pes'=>$id_pesanan,'stat'=>$set_status]);
+        try{
+            $id_pelanggan = $request->user()->IDPelanggan;
+            $id_pesanan = Pesanan::select('IDPesanan')->where('IDPelanggan', $id_pelanggan)->where('IDPesanan', $request->IDPesanan)->first();
+            $id_pesanan = $id_pesanan->IDPesanan;
+            $set_status = $request->SetStatus;
+            Pelacakan::where('IDPesanan', $id_pesanan)->update(['IDStatus' => $set_status]);
+    
+            //return response()->json(['new status'=>$set_status, 'pel'=>$pelanggan]);
+            return redirect()->route('newPemberitahuan', ['pes'=>$id_pesanan,'stat'=>$set_status, 'pel'=>$id_pelanggan]);
+        }
+        catch(\Exception $e) {
+            return response()->json(['success'=>false, 'message'=>$e->getMessage(),'Status'=>500], 500);
+        }
+    	
     }
 
-    public function newPemberitahuan($pes, $stat)
+    public function newPemberitahuan($pes, $stat, $pel)
     {
-        // if status cocok, buat pemberitahuan, kalo nggak gausah
-        $waktu = Carbon::now()->toDateTimeString();
+        try{
+            // if status cocok, buat pemberitahuan, kalo nggak gausah
+        $waktu = Carbon::now('Asia/Jakarta')->toDateTimeString();
+
         $pemberitahuan = Pemberitahuan::create([
             'IDPesanan'=>$pes,
             'IDStatus'=>$stat,
-            'WaktuPemberitahuan'=>$waktu
+            'WaktuPemberitahuan'=>$waktu,
+            'IDPelanggan'=>$pel
             ]);
-    	return response()->json(['pes'=>$pes, 'stat'=>$stat]);
+    	return response()->json(['pes'=>$pes, 'stat'=>$stat, 'pel'=>$pel]);
+        }
+        catch(\Exception $e) {
+            return response()->json(['success'=>false, 'message'=>$e->getMessage(),'Status'=>500], 500);
+        }
     }
 
     public function getPemberitahuan(User $user, Request $request)
     {
+        try{
         $id_pelanggan = $request->user()->IDPelanggan;
         $pemberitahuans = Pemberitahuan::where('IDPelanggan', $id_pelanggan)->orderBy('WaktuPemberitahuan', 'desc')->get();
 
+        foreach ($pemberitahuans as $pemberitahuan)
+        {
+            $nama_status = StatusPelacakan::select('Status')->where('IDStatus', $pemberitahuan->IDStatus)->first();
+            $pemberitahuan->setAttribute('NamaStatus', $nama_status->Status);
+        }
+
         return response()->json(['Pemberitahuans'=>$pemberitahuans]);
+        }
+        catch(\Exception $e) {
+            return response()->json(['success'=>false, 'message'=>$e->getMessage(),'Status'=>500], 500);
+        }
+    }
+
+    public function readPemberitahuan(User $user, Request $request)
+    {
+        try{
+            $id_pelanggan = $request->user()->IDPelanggan;
+        $id_pemberitahuan = $request->IDPemberitahuan;
+
+        Pemberitahuan::where('IDPemberitahuan', $id_pemberitahuan)->where('IDPelanggan', $id_pelanggan)
+                    ->update(['Dilihat' => 1 ]);
+
+        return response()->json(['message'=>'Pemberitahuan telah dibaca', 'Status'=>200], 200);
+        }
+        catch(\Exception $e) {
+            return response()->json(['success'=>false, 'message'=>$e->getMessage(),'Status'=>500], 500);
+        }
     }
 }

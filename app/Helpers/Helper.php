@@ -21,7 +21,7 @@ class Helper
         try
         {
         	// get nomor pesanan
-        	$waktu_sekarang = Carbon::now();
+        	$waktu_sekarang = Carbon::now('Asia/Jakarta');
         	$bulan = $waktu_sekarang->month;
         	$tahun = $waktu_sekarang->year;
 
@@ -118,7 +118,7 @@ class Helper
         try
         {
         	// create nomor sampel
-        	$waktu_sekarang = Carbon::now();
+        	$waktu_sekarang = Carbon::now('Asia/Jakarta');
         	$bulan = $waktu_sekarang->month;
         	$tahun = $waktu_sekarang->year;
 

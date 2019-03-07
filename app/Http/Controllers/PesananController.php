@@ -78,7 +78,7 @@ class PesananController extends Controller
             Pesanan::where('IDPesanan', $id_pesanan)->where('IDPelanggan', $id_pelanggan)->update([
                 'Ulasan' => $ulasan
                 ]);
-            $waktu_sekarang = Carbon::now()->toDateTimeString();
+            $waktu_sekarang = Carbon::now('Asia/Jakarta')->toDateTimeString();
 
             Pelacakan::where('IDPesanan', $id_pesanan)->update([
                 'WaktuUlasan' => $waktu_sekarang
@@ -162,7 +162,7 @@ class PesananController extends Controller
             $status_kirim_sertifikat = Pelacakan::select('KirimSertifikat')->where('IDPesanan', $id_pesanan)->first()->KirimSertifikat;
 
             // get waktu status by kondisi
-            // pembayaran
+            // pembayaran stat 2 = bukti bayar uploaded, 3 = pembayaran di verifikasi
             $waktu_pembayaran = NULL;
             $waktu_kirim_sampel = NULL;
             $waktu_sisa_sampel = NULL;
@@ -178,7 +178,7 @@ class PesananController extends Controller
                                     ->first()->WaktuPemberitahuan;
                 $waktu_pembayaran = $waktu_pembayaran->toDateTimeString();
             }
-            // kirim sampel
+            // kirim sampel stat 2 = bukti kirim sampel uploaded, 3 = pesanan diterima dan divalidasi
             if($status_kirim_sampel==2){
                 $waktu_kirim_sampel = Pelacakan::select('WaktuKirimSampel')->where('IDPesanan', $id_pesanan)->first()->KirimSampel;
                 $waktu_kirim_sampel = $waktu_kirim_sampel->toDateTimeString();
@@ -190,7 +190,7 @@ class PesananController extends Controller
                                     ->first()->WaktuPemberitahuan;
                 $waktu_kirim_sampel = $waktu_kirim_sampel->toDateTimeString();
             }
-            // sisa sampel
+            // sisa sampel stat 3 = sisa sampel diterima, 2 = sisa sampel dikirim
             if($status_sisa_sampel==3){
                 $waktu_sisa_sampel = Pelacakan::select('WaktuTerimaSisa')->where('IDPesanan', $id_pesanan)->first()->WaktuTerimaSisa;
                 $waktu_sisa_sampel = $waktu_sisa_sampel->toDateTimeString();
@@ -202,7 +202,7 @@ class PesananController extends Controller
                                     ->first()->WaktuPemberitahuan;
                 $waktu_sisa_sampel = $waktu_sisa_sampel->toDateTimeString();
             }
-            // kirim sertifikat
+            // kirim sertifikat 3 = sertifikat diterima, 2 = sertifikat dikirim
             if($status_kirim_sertifikat==3){
                 $waktu_kirim_sertifikat = Pelacakan::select('WaktuTerimaSertifikat')->where('IDPesanan', $id_pesanan)->first()->WaktuTerimaSertifikat;
                 $waktu_kirim_sertifikat = $waktu_kirim_sertifikat->toDateTimeString();
@@ -214,7 +214,7 @@ class PesananController extends Controller
                                     ->first()->WaktuPemberitahuan;
                 $waktu_kirim_sertifikat = $waktu_kirim_sertifikat->toDateTimeString();
             }
-            // pesanan divalidasi stat = 2
+            // pesanan divalidasi idstat = 2
             if(Pemberitahuan::where('IDPesanan', $id_pesanan)->where('IDStatus', 2)->exists())
             {
                 $validasi_pesanan = Pemberitahuan::select('WaktuPemberitahuan')->where('IDPesanan', $id_pesanan)
@@ -223,7 +223,7 @@ class PesananController extends Controller
             }
             else $waktu_validasi_pesanan = NULL;
             
-            // dikaji ulang stat = 3
+            // dikaji ulang idstat = 3
             if(Pemberitahuan::where('IDPesanan', $id_pesanan)->where('IDStatus', 3)->exists())
             {
                 $kaji_ulang = Pemberitahuan::select('WaktuPemberitahuan')->where('IDPesanan', $id_pesanan)
@@ -231,7 +231,7 @@ class PesananController extends Controller
                 $waktu_dikaji_ulang = $kaji_ulang->WaktuPemberitahuan;
             }
             else $waktu_dikaji_ulang = NULL;
-            // dianalisis stat = 4
+            // dianalisis idstat = 4
             if(Pemberitahuan::where('IDPesanan', $id_pesanan)->where('IDStatus', 4)->exists())
             {
                 $dianalisis = Pemberitahuan::select('WaktuPemberitahuan')->where('IDPesanan', $id_pesanan)
@@ -239,7 +239,7 @@ class PesananController extends Controller
                 $waktu_dianalisis = $dianalisis->WaktuPemberitahuan;
             }
             else $waktu_dianalisis = NULL;
-            // selesai stat = 5
+            // selesai idstat = 5
             if(Pemberitahuan::where('IDPesanan', $id_pesanan)->where('IDStatus', 5)->exists())
             {
                 $selesai = Pemberitahuan::select('WaktuPemberitahuan')->where('IDPesanan', $id_pesanan)
@@ -247,7 +247,7 @@ class PesananController extends Controller
                 $waktu_selesai = $selesai->WaktuPemberitahuan;
             }
             else $waktu_selesai = NULL;
-            // dibatalkan stat = 6 / 7
+            // dibatalkan idstat = 6 / 7
             $stat6 = Pemberitahuan::where('IDPesanan', $id_pesanan)->where('IDStatus', 6)->exists();
             $stat7 = Pemberitahuan::where('IDPesanan', $id_pesanan)->where('IDStatus', 7)->exists();
             if($stat6 || $stat7)
