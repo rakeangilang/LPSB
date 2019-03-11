@@ -110,9 +110,10 @@ class PesananController extends Controller
             $id_pelanggan = $request->user()->IDPelanggan;
             $id_pesanan = $request->IDPesanan;
 
-            $ulasan = Pesanan::select('Ulasan')->where('IDPesanan', $id_pesanan)->where('IDPelanggan', $id_pelanggan)->first();
+            $ulasan = Pesanan::select('Ulasan')->where('IDPesanan', $id_pesanan)->where('IDPelanggan', $id_pelanggan)->first()->Ulasan;
+            $waktu_ulasan = Pelacakan::select('WaktuUlasan')->where('IDPesanan', $id_pesanan)->first()->WaktuUlasan;
 
-            return response()->json(['success'=>true, 'Ulasan'=>$ulasan->Ulasan, 'Status'=>200], 200);
+            return response()->json(['success'=>true, 'Ulasan'=>$ulasan, 'WaktuUlasan'=>$waktu_ulasan, 'Status'=>200], 200);
         }
         catch(\Exception $e) {
             return response()->json(['success'=>false, 'message'=>$e->getMessage(),'Status'=>500], 500);
@@ -235,6 +236,7 @@ class PesananController extends Controller
             $status_kirim_sampel = Pelacakan::select('KirimSampel')->where('IDPesanan', $id_pesanan)->first()->KirimSampel;
             $status_sisa_sampel = Pelacakan::select('SisaSampel')->where('IDPesanan', $id_pesanan)->first()->SisaSampel;
             $status_kirim_sertifikat = Pelacakan::select('KirimSertifikat')->where('IDPesanan', $id_pesanan)->first()->KirimSertifikat;
+            $status_utama = Pelacakan::select('IDStatus')->where('IDPesanan', $id_pesanan)->first()->IDStatus;
 
             // get waktu status by kondisi
             // pembayaran stat 2 = bukti bayar uploaded, 3 = pembayaran di verifikasi
@@ -328,6 +330,7 @@ class PesananController extends Controller
 
 
             $status_pesanan = array('WaktuValidasiPesanan'=>$waktu_validasi_pesanan, 'WaktuDikajiUlang'=>$waktu_dikaji_ulang,
+                'StatusUtama'=>$status_utama,
                 'WaktuDianalisis'=>$waktu_dianalisis, 'WaktuSelesai'=>$waktu_selesai, 'WaktuDibatalkan'=>$waktu_dibatalkan, 'WaktuUlasan'=>$waktu_ulasan, 'WaktuPesananDibuat'=>$waktu_pesanan_dibuat,
                 'StatusPembayaran'=>$status_pembayaran, 'WaktuPembayaran'=>$waktu_pembayaran, 
                 'StatusKirimSampel'=>$status_kirim_sampel, 'WaktuKirimSampel'=>$waktu_kirim_sampel,
