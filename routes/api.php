@@ -54,3 +54,6 @@ Route::post('/setStatus', 'PemberitahuanController@setStatus')->middleware('auth
 Route::get('/newPemberitahuan/{pes}/{stat}/{pel}', 'PemberitahuanController@newPemberitahuan')->middleware('auth:api')->name('newPemberitahuan');
 Route::get('/getPemberitahuan', 'PemberitahuanController@getPemberitahuan')->middleware('auth:api');
 Route::post('/readPemberitahuan', 'PemberitahuanController@readPemberitahuan')->middleware('auth:api');
+
+//tes
+Route::get('/getGambar', 'PesananController@getGambar');

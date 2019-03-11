@@ -3,6 +3,8 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\File;
 use App\Pesanan;
 use App\DokumenPesanan;
 use App\AdministrasiPesanan;
@@ -218,11 +220,30 @@ class PesananController extends Controller
                 'NoRekening'=>$data_rek['NoRekening']
                 ]);
 
-            return response()->json(['message'=>'Bukti pembayaran berhasil diunggah','Status'=>200], 200);
+            return response()->json([
+                'message'=>'Bukti pembayaran berhasil diunggah',
+                'data_rek'=>$data_rek,
+                'Status'=>200], 200);
         }
         catch(\Exception $e){
             return response()->json(['success'=>false, 'message'=>$e->getMessage(),'Status'=>500], 500);
         }
+    }
+
+    public function getGambar()
+    {
+        //$img = Storage::get('public/Day1Recap.PNG');
+        $path = public_path('images/Day1Recap.PNG');
+
+        $fileData = file_get_contents($path);
+        $encode = base64_encode($fileData);
+        //$file = File::get(public_path('images/Day1Recap.PNG'));
+
+        $decode = base64_decode($encode);
+
+        //return response()->file($path);
+       // return $img;//response()->json(['img'=>$img]);
+        return response($decode)->header('Content-Type', 'image');
     }
 
     private function getStatus($id_pesanan, $id_pelanggan)
