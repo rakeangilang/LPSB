@@ -8,20 +8,27 @@ use App\Pesanan;
 use App\Pelacakan;
 use App\Pemberitahuan;
 use App\StatusPelacakan;
+use App\AdministrasiPesanan;
 use Carbon\Carbon;
 
 class PemberitahuanController extends Controller
 {
     //
-    public function setStatus(User $user, Request $request)
+    public function setStatusByAdmin(User $user, Request $request)
     {
         try{
+            $waktu_sekarang = Carbon::now('Asia/Jakarta')->toDateTimeString();
             $id_pelanggan = $request->user()->IDPelanggan;
             $id_pesanan = Pesanan::select('IDPesanan')->where('IDPelanggan', $id_pelanggan)->where('IDPesanan', $request->IDPesanan)->first();
             $id_pesanan = $id_pesanan->IDPesanan;
             $set_status = $request->SetStatus;
-            Pelacakan::where('IDPesanan', $id_pesanan)->update(['IDStatus' => $set_status]);
-    
+            Pelacakan::where('IDPesanan', $id_pesanan)->update(['IDStatus' => $set_status, 'UpdateTerakhir' => $waktu_sekarang]);
+            
+            if($set_status == 7){
+                AdministrasiPesanan::where('IDPesanan', $id_pesanan)->update(['CatatanPembatalan'=>$request->Alasan]);
+                Pelacakan::where('IDPesanan', $id_pesanan)->update(['WaktuBatal' => $waktu_sekarang]);
+            }
+
             //return response()->json(['new status'=>$set_status, 'pel'=>$pelanggan]);
             return redirect()->route('newPemberitahuan', ['pes'=>$id_pesanan,'stat'=>$set_status, 'pel'=>$id_pelanggan]);
         }
@@ -43,7 +50,14 @@ class PemberitahuanController extends Controller
             'WaktuPemberitahuan'=>$waktu,
             'IDPelanggan'=>$pel
             ]);
-    	return response()->json(['pes'=>$pes, 'stat'=>$stat, 'pel'=>$pel]);
+        
+        if($stat == 7){
+            $alasan = AdministrasiPesanan::select('CatatanPembatalan')->where('IDPesanan', $pes)->first()->CatatanPembatalan;
+
+            return response()->json(['IDPesanan'=>$pes, 'IDStatus'=>$stat, 'WaktuPembatalan'=>$waktu, 'Alasan'=>$alasan]);
+        }
+
+    	return response()->json(['IDPesanan'=>$pes, 'IDStatus'=>$stat, 'WaktuPemberitahuan'=>$waktu, ]);
         }
         catch(\Exception $e) {
             return response()->json(['success'=>false, 'message'=>$e->getMessage(),'Status'=>500], 500);

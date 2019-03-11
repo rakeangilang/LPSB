@@ -48,9 +48,10 @@ Route::post('/getUlasan', 'PesananController@getUlasan')->middleware('auth:api')
 Route::post('/detailPesanan', 'PesananController@detailPesanan')->middleware('auth:api');
 Route::post('/kirimSampel', 'PesananController@kirimSampel')->middleware('auth:api');
 Route::post('/bayar', 'PesananController@bayar')->middleware('auth:api');
+Route::post('/ubahStatusByPelanggan', 'PesananController@ubahStatusByPelanggan')->middleware('auth:api');
 
 // Pemberitahuan
-Route::post('/setStatus', 'PemberitahuanController@setStatus')->middleware('auth:api');
+Route::post('/setStatusByAdmin', 'PemberitahuanController@setStatusByAdmin')->middleware('auth:api');
 Route::get('/newPemberitahuan/{pes}/{stat}/{pel}', 'PemberitahuanController@newPemberitahuan')->middleware('auth:api')->name('newPemberitahuan');
 Route::get('/getPemberitahuan', 'PemberitahuanController@getPemberitahuan')->middleware('auth:api');
 Route::post('/readPemberitahuan', 'PemberitahuanController@readPemberitahuan')->middleware('auth:api');

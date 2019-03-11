@@ -251,6 +251,64 @@ class PesananController extends Controller
         return response($decode)->header('Content-Type', 'image');
     }
 
+    public function ubahStatusByPelanggan(User $user, Request $request)
+    {
+        try{
+            $id_pelanggan = $request->user()->IDPelanggan;
+            $id_pesanan = $request->IDPesanan;
+            $id_pesanan = Pesanan::select('IDPesanan')->where('IDPesanan', $id_pesanan)->where('IDPelanggan', $id_pelanggan)
+                                ->first();
+            $id_pesanan = $id_pesanan->IDPesanan;
+            $ubah_status = $request->UbahStatus;
+
+            $waktu_sekarang = Carbon::now('Asia/Jakarta')->toDateTimeString();
+
+            // batal
+            if($ubah_status == 'Batal'){
+                Pelacakan::where('IDPesanan', $id_pesanan)->update(['IDStatus'=>6]);
+                $alasan = $request->Alasan;
+                AdministrasiPesanan::where('IDPesanan', $id_pesanan)->update(['CatatanPembatalan'=>$alasan]);
+                Pelacakan::where('IDPesanan', $id_pesanan)->update(['WaktuBatal' => $waktu_sekarang]);
+
+                $waktu = Carbon::now('Asia/Jakarta')->toDateTimeString();
+
+                $pemberitahuan = Pemberitahuan::create([
+                'IDPesanan'=>$id_pesanan,
+                'IDStatus'=>6,
+                'WaktuPemberitahuan'=>$waktu,
+                'IDPelanggan'=>$id_pelanggan
+                ]);
+
+                return response()->json(['Status pembatalan'=>6, 'Status'=>200], 200);
+            }
+    
+            // terima sisa sampel
+            elseif($ubah_status == 'SisaSampel'){
+                Pelacakan::where('IDPesanan', $id_pesanan)->update(['SisaSampel'=>3, 'WaktuTerimaSisa'=>$waktu_sekarang]);
+
+                return response()->json(['Status sisa sampel'=>3, 'Status'=>200], 200);
+            }
+
+            // terima sertifikat
+            elseif($ubah_status == 'TerimaSertifikat'){
+                Pelacakan::where('IDPesanan', $id_pesanan)->update(['KirimSertifikat'=>3, 'WaktuTerimaSertif'=>waktu_sekarang]);
+
+                return response()->json(['Status sertifikat'=>3, 'Status'=>200], 200);
+            }
+
+            // minta kirim sertifikat
+            elseif($ubah_status == 'MintaSertifikat'){
+                Pelacakan::where('IDPesanan', $id_pesanan)->update(['KirimSertifikat'=>1]);
+
+                return response()->json(['Status sertifikat'=>1, 'Status'=>200], 200);
+            }
+        }
+        catch(\Exception $e) {
+            return response()->json(['success'=>false, 'message'=>$e->getMessage(),'Status'=>500], 500);
+        }
+        
+    }
+
     private function getStatus($id_pesanan, $id_pelanggan)
     {
         try
