@@ -46,6 +46,8 @@ Route::get('/getPesanan', 'PesananController@getPesanan')->middleware('auth:api'
 Route::post('/beriUlasan', 'PesananController@beriUlasan')->middleware('auth:api');
 Route::post('/getUlasan', 'PesananController@getUlasan')->middleware('auth:api');
 Route::post('/detailPesanan', 'PesananController@detailPesanan')->middleware('auth:api');
+Route::post('/kirimSampel', 'PesananController@kirimSampel')->middleware('auth:api');
+Route::post('/bayar', 'PesananController@bayar')->middleware('auth:api');
 
 // Pemberitahuan
 Route::post('/setStatus', 'PemberitahuanController@setStatus')->middleware('auth:api');

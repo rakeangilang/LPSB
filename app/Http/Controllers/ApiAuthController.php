@@ -16,6 +16,7 @@ class ApiAuthController extends Controller
       try{
       $nama = $request['Nama'];
       $email = $request['Email'];
+      $perusahaan = $request['Perusahaan'];
       $password = Hash::make($request['Password']);
       $api_token = bcrypt($email);
 
@@ -30,13 +31,14 @@ class ApiAuthController extends Controller
         User::create([
         'Nama' => $nama,
         'Email' => $email,
+        'Perusahaan' => $perusahaan,
         'Password' => $password,
         'api_token' => $api_token
       ]);
 
       return response()->json([
         'success'=>true,
-            'message'=>'Register berhasil, simpan data pengguna',
+        'message'=>'Register berhasil, simpan data pengguna',
         'Nama' => $nama,
         'Email' => $email,
         'api_token' => $api_token,

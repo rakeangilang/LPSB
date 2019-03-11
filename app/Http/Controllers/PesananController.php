@@ -26,23 +26,35 @@ class PesananController extends Controller
     	foreach($pesanans as $pesanan)
     	{
     		// get data and pre condition
-    		$status_pesanan = Pelacakan::select('IDStatus', 'UpdateTerakhir')->where('IDPesanan', $pesanan->IDPesanan)->first();
-    		if($pesanan->Ulasan == NULL){ $status_ulasan = 0; }
-    		else { $status_ulasan = 1; }
+    		$status_pesanan = Pelacakan::select('Pembayaran', 'KirimSampel', 'IDStatus', 'UpdateTerakhir', 'WaktuPembayaran', 'WaktuKirimSampel', 'WaktuUlasan')->where('IDPesanan', $pesanan->IDPesanan)->first();
+            $waktu_ulasan = $status_pesanan->WaktuUlasan;
     		
     		$pesanan->setAttribute('StatusUtama', $status_pesanan->IDStatus);
     		$pesanan->setAttribute('HargaTotal', $pesanan->TotalHarga);
     		$pesanan->setAttribute('WaktuStatusTerbaru', $status_pesanan->UpdateTerakhir->toDateTimeString());
 
     		// set status
-    		$status_dokumen = DokumenPesanan::select('BuktiPembayaran', 'BuktiPengiriman')->where('IDPesanan', $pesanan->IDPesanan)->first();
-    		if($status_dokumen->BuktiPembayaran == NULL){ $status_pembayaran = 0; }
-    		else { $status_pembayaran = 1; }
-    		if($status_dokumen->BuktiPengiriman == NULL){ $status_pengiriman = 0; }
-    		else { $status_pengiriman = 1; }
+            $status_pembayaran = $status_pesanan->Pembayaran;
+            if($status_pembayaran == 3) {
+                $waktu_pembayaran = Pemberitahuan::select('WaktuPemberitahuan')->where('IDPesanan', $pesanan->IDPesanan)
+                            ->where('IDStatus', 21)->first();
+                $waktu_pembayaran = $waktu_pembayaran->WaktuPemberitahuan;
+            }
+            else $waktu_pembayaran = null;
+
+            $status_pengiriman = $status_pesanan->KirimSampel;
+            if($status_pengiriman == 3) {
+                $waktu_pengiriman = Pemberitahuan::select('WaktuPemberitahuan')->where('IDPesanan', $pesanan->IDPesanan)
+                            ->where('IDStatus', 22)->first();
+                $waktu_pengiriman = $waktu_pengiriman->WaktuPemberitahuan;
+            }
+            else $waktu_pengiriman = null;
+
     		$pesanan->setAttribute('status_pembayaran', $status_pembayaran);
+            $pesanan->setAttribute('waktu_pembayaran', $waktu_pembayaran);
     		$pesanan->setAttribute('status_pengiriman', $status_pengiriman);
-    		$pesanan->setAttribute('status_ulasan', $status_ulasan);
+            $pesanan->setAttribute('waktu_pengiriman', $waktu_pengiriman);
+    		$pesanan->setAttribute('waktu_ulasan', $waktu_ulasan);
 
     		// sampel
     		$sampels = Sampel::select('IDKatalog', 'IDSampel', 'JenisSampel', 'BentukSampel', 'Kemasan', 'Jumlah', 'JenisAnalisis', 'HargaSampel')->where('IDPesanan', $pesanan->IDPesanan)->get();
@@ -55,6 +67,7 @@ class PesananController extends Controller
     		}
 
     		$pesanan->setAttribute('Sampel', $sampels);
+            unset($pesanan->Ulasan);
     	}
 
         $sorted = $pesanans->sortByDesc('WaktuStatusTerbaru');
@@ -115,10 +128,13 @@ class PesananController extends Controller
             $id_pesanan = $pesanan->IDPesanan;
 
             $total_harga = $pesanan->TotalHarga;
-            $data_user = AdministrasiPesanan::select('NamaLengkap', 'Institusi', 'Alamat', 'NoHP', 'Email', 'NoNPWP')
+            $data_user = AdministrasiPesanan::select('NamaLengkap', 'Institusi', 'Alamat', 'NoHP', 'Email', 'NoNPWP', 'KeteranganPesanan')
                                             ->where('IDPesanan', $id_pesanan)->first();
 
             $status_pesanan = $this->getStatus($id_pesanan, $id_pelanggan);
+            $keterangan = $data_user->KeteranganPesanan;
+            $percepatan = $pesanan->Percepatan;
+            $kembalikan_sampel = $pesanan->KembalikanSampel;
 
             $sampels = Sampel::select('IDKatalog', 'JenisSampel', 'BentukSampel', 'Kemasan', 'Jumlah', 'JenisAnalisis', 'Metode', 'HargaSampel')
                             ->where('IDPesanan', $id_pesanan)->get();
@@ -132,16 +148,78 @@ class PesananController extends Controller
             $tahun = Carbon::parse($pesanan->WaktuPemesanan)->format('y');            
             $no_pesanan = $pesanan->NoPesanan . '/' . $bulan . '/' . $tahun;
 
+            unset($data_user->KeteranganPesanan);
+
             return response()->json([
                 'message'=>'Berhasil mengambil detail pesanan', 
                 'data_user'=>$data_user,
                 'status_pesanan'=>$status_pesanan,
                 'HargaTotal'=>$total_harga,
+                'Keterangan'=>$keterangan,
+                'Percepatan'=>$percepatan,
+                'KembalikanSampel'=>$kembalikan_sampel,
                 'listSampel'=>$sampels,
                 'NoPesanan'=>$no_pesanan, 
                 'Status'=>200], 200);
         }
         catch(\Exception $e) {
+            return response()->json(['success'=>false, 'message'=>$e->getMessage(),'Status'=>500], 500);
+        }
+    }
+
+    public function kirimSampel(User $user, Request $request)
+    {
+        try{
+            $id_pelanggan = $request->user()->IDPelanggan;
+            $id_pesanan = $request->IDPesanan;
+            $id_pesanan = Pesanan::select('IDPesanan')->where('IDPelanggan', $id_pelanggan)
+                                ->where('IDPesanan', $id_pesanan)->first();
+            $id_pesanan = $id_pesanan->IDPesanan;
+            $resi = $request->Resi;
+
+            DokumenPesanan::where('IDPesanan', $id_pesanan)->update(['BuktiPengiriman'=>$resi]);
+            $waktu_sekarang = Carbon::now('Asia/Jakarta')->toDateTimeString();
+            Pelacakan::where('IDPesanan', $id_pesanan)->update([
+                'KirimSampel'=>2, 
+                'WaktuKirimSampel'=>$waktu_sekarang
+                ]);
+            // kirim sendiri = '-KirimSendiri'
+            return response()->json(['NoResi'=>$resi,'Status'=>200], 200);
+        }
+        catch(\Exception $e){
+            return response()->json(['success'=>false, 'message'=>$e->getMessage(),'Status'=>500], 500);
+        }
+    }
+
+    public function bayar(User $user, Request $request)
+    {
+        try
+        {
+            $id_pelanggan = $request->user()->IDPelanggan;
+            $id_pesanan = $request->IDPesanan;
+            $id_pesanan = Pesanan::select('IDPesanan')->where('IDPelanggan', $id_pelanggan)
+                                ->where('IDPesanan', $id_pesanan)->first();
+            $id_pesanan = $id_pesanan->IDPesanan;
+            $data_rek = $request->data_rek;
+            $bayar = $request->BuktiBayar;
+
+            // {"IDPesanan": 3, "BuktiBayar": "lul", "data_rek":{"NamaRekening":"h4h4", "NamaBank": "BI", NoRekening: 223}}
+            DokumenPesanan::where('IDPesanan', $id_pesanan)->update(['BuktiPembayaran'=>$bayar]);
+            $waktu_sekarang = Carbon::now('Asia/Jakarta')->toDateTimeString();
+            Pelacakan::where('IDPesanan', $id_pesanan)->update([
+                'Pembayaran'=>2, 
+                'WaktuPembayaran'=>$waktu_sekarang
+                ]);
+
+            AdministrasiPesanan::where('IDPesanan', $id_pesanan)->update([
+                'NamaRekening'=>$data_rek['NamaRekening'],
+                'NamaBank'=>$data_rek['NamaBank'],
+                'NoRekening'=>$data_rek['NoRekening']
+                ]);
+
+            return response()->json(['message'=>'Bukti pembayaran berhasil diunggah','Status'=>200], 200);
+        }
+        catch(\Exception $e){
             return response()->json(['success'=>false, 'message'=>$e->getMessage(),'Status'=>500], 500);
         }
     }
@@ -153,9 +231,6 @@ class PesananController extends Controller
             // get status
             $waktu_pesanan_dibuat = Pesanan::select('WaktuPemesanan')->where('IDPesanan', $id_pesanan)->first()->WaktuPemesanan;
             $waktu_pesanan_dibuat = $waktu_pesanan_dibuat->toDateTimeString();
-            $status_utama = Pelacakan::select('IDStatus')->where('IDPesanan', $id_pesanan)->first()->IDStatus;
-            $waktu_status_utama = Pelacakan::select('UpdateTerakhir')->where('IDPesanan', $id_pesanan)->first()->UpdateTerakhir;
-            $waktu_status_utama = $waktu_status_utama->toDateTimeString();
             $status_pembayaran = Pelacakan::select('Pembayaran')->where('IDPesanan', $id_pesanan)->first()->Pembayaran;
             $status_kirim_sampel = Pelacakan::select('KirimSampel')->where('IDPesanan', $id_pesanan)->first()->KirimSampel;
             $status_sisa_sampel = Pelacakan::select('SisaSampel')->where('IDPesanan', $id_pesanan)->first()->SisaSampel;
@@ -167,53 +242,41 @@ class PesananController extends Controller
             $waktu_kirim_sampel = NULL;
             $waktu_sisa_sampel = NULL;
             $waktu_kirim_sertifikat = NULL;
-            if($status_pembayaran==2){
-                $waktu_pembayaran = Pelacakan::select('WaktuPembayaran')->where('IDPesanan', $id_pesanan)->first()->WaktuPembayaran;
-                $waktu_pembayaran = $waktu_pembayaran->toDateTimeString();
-            }
-            elseif ($status_pembayaran==3) {
+            if ($status_pembayaran==3) {
                 $waktu_pembayaran = Pemberitahuan::select('WaktuPemberitahuan')
                                     ->where('IDPesanan', $id_pesanan)
                                     ->where('IDStatus', 21)
                                     ->first()->WaktuPemberitahuan;
                 $waktu_pembayaran = $waktu_pembayaran->toDateTimeString();
             }
+            else $waktu_pembayaran = null;
             // kirim sampel stat 2 = bukti kirim sampel uploaded, 3 = pesanan diterima dan divalidasi
-            if($status_kirim_sampel==2){
-                $waktu_kirim_sampel = Pelacakan::select('WaktuKirimSampel')->where('IDPesanan', $id_pesanan)->first()->KirimSampel;
-                $waktu_kirim_sampel = $waktu_kirim_sampel->toDateTimeString();
-            }
-            elseif ($status_kirim_sampel==3) {
+            if ($status_kirim_sampel==3) {
                 $waktu_kirim_sampel = Pemberitahuan::select('WaktuPemberitahuan')
                                     ->where('IDPesanan', $id_pesanan)
                                     ->where('IDStatus', 22)
                                     ->first()->WaktuPemberitahuan;
                 $waktu_kirim_sampel = $waktu_kirim_sampel->toDateTimeString();
             }
+            else $waktu_kirim_sampel = null;
             // sisa sampel stat 3 = sisa sampel diterima, 2 = sisa sampel dikirim
-            if($status_sisa_sampel==3){
-                $waktu_sisa_sampel = Pelacakan::select('WaktuTerimaSisa')->where('IDPesanan', $id_pesanan)->first()->WaktuTerimaSisa;
-                $waktu_sisa_sampel = $waktu_sisa_sampel->toDateTimeString();
-            }
-            elseif ($status_sisa_sampel==2) {
+            if ($status_sisa_sampel==2) {
                 $waktu_sisa_sampel = Pemberitahuan::select('WaktuPemberitahuan')
                                     ->where('IDPesanan', $id_pesanan)
                                     ->where('IDStatus', 51)
                                     ->first()->WaktuPemberitahuan;
                 $waktu_sisa_sampel = $waktu_sisa_sampel->toDateTimeString();
             }
+            else $waktu_sisa_sampel = null;
             // kirim sertifikat 3 = sertifikat diterima, 2 = sertifikat dikirim
-            if($status_kirim_sertifikat==3){
-                $waktu_kirim_sertifikat = Pelacakan::select('WaktuTerimaSertifikat')->where('IDPesanan', $id_pesanan)->first()->WaktuTerimaSertifikat;
-                $waktu_kirim_sertifikat = $waktu_kirim_sertifikat->toDateTimeString();
-            }
-            elseif ($status_kirim_sertifikat==2) {
+            if ($status_kirim_sertifikat==2) {
                 $waktu_kirim_sertifikat = Pemberitahuan::select('WaktuPemberitahuan')
                                     ->where('IDPesanan', $id_pesanan)
                                     ->where('IDStatus', 52)
                                     ->first()->WaktuPemberitahuan;
                 $waktu_kirim_sertifikat = $waktu_kirim_sertifikat->toDateTimeString();
             }
+            else $waktu_kirim_sertifikat = null;
             // pesanan divalidasi idstat = 2
             if(Pemberitahuan::where('IDPesanan', $id_pesanan)->where('IDStatus', 2)->exists())
             {
@@ -265,7 +328,7 @@ class PesananController extends Controller
 
 
             $status_pesanan = array('WaktuValidasiPesanan'=>$waktu_validasi_pesanan, 'WaktuDikajiUlang'=>$waktu_dikaji_ulang,
-                'WaktuDianalisis'=>$waktu_dianalisis, 'WaktuSelesai'=>$waktu_selesai, 'WaktuDibatalkan'=>$waktu_dibatalkan, 'WaktuUlasan'=>$waktu_ulasan, 'WaktuPesananDibuat'=>$waktu_pesanan_dibuat, 'StatusUtama'=>$status_utama, 'WaktuStatusUtama'=>$waktu_status_utama, 
+                'WaktuDianalisis'=>$waktu_dianalisis, 'WaktuSelesai'=>$waktu_selesai, 'WaktuDibatalkan'=>$waktu_dibatalkan, 'WaktuUlasan'=>$waktu_ulasan, 'WaktuPesananDibuat'=>$waktu_pesanan_dibuat,
                 'StatusPembayaran'=>$status_pembayaran, 'WaktuPembayaran'=>$waktu_pembayaran, 
                 'StatusKirimSampel'=>$status_kirim_sampel, 'WaktuKirimSampel'=>$waktu_kirim_sampel,
                 'StatusSisaSampel'=>$status_sisa_sampel, 'WaktuTerimaSisa'=>$waktu_sisa_sampel,
