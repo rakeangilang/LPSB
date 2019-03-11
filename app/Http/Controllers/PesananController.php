@@ -205,6 +205,9 @@ class PesananController extends Controller
             $id_pesanan = $id_pesanan->IDPesanan;
             $data_rek = $request->data_rek;
             $bayar = $request->BuktiBayar;
+            $nama_rekening = $data_rek['NamaRekening'];
+            $nama_bank = $data_rek['NamaBank'];
+            $no_rekening = $data_rek['NoRekening'];
 
             // {"IDPesanan": 3, "BuktiBayar": "lul", "data_rek":{"NamaRekening":"h4h4", "NamaBank": "BI", NoRekening: 223}}
             DokumenPesanan::where('IDPesanan', $id_pesanan)->update(['BuktiPembayaran'=>$bayar]);
@@ -215,14 +218,16 @@ class PesananController extends Controller
                 ]);
 
             AdministrasiPesanan::where('IDPesanan', $id_pesanan)->update([
-                'NamaRekening'=>$data_rek['NamaRekening'],
-                'NamaBank'=>$data_rek['NamaBank'],
-                'NoRekening'=>$data_rek['NoRekening']
+                'NamaRekening'=>$nama_rekening,
+                'NamaBank'=>$nama_bank,
+                'NoRekening'=>$no_rekening
                 ]);
 
             return response()->json([
                 'message'=>'Bukti pembayaran berhasil diunggah',
-                'data_rek'=>$data_rek,
+                'NamaRekening'=>$nama_rekening,
+                'NamaBank'=>$nama_bank,
+                'NoRekening'=>$no_rekening,
                 'Status'=>200], 200);
         }
         catch(\Exception $e){
