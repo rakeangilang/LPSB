@@ -324,9 +324,6 @@ class PesananController extends Controller
             // get waktu status by kondisi
             // pembayaran stat 2 = bukti bayar uploaded, 3 = pembayaran di verifikasi
             $waktu_pembayaran = NULL;
-            $waktu_kirim_sampel = NULL;
-            $waktu_sisa_sampel = NULL;
-            $waktu_kirim_sertifikat = NULL;
             if ($status_pembayaran==3) {
                 $waktu_pembayaran = Pemberitahuan::select('WaktuPemberitahuan')
                                     ->where('IDPesanan', $id_pesanan)
@@ -336,32 +333,21 @@ class PesananController extends Controller
             }
             else $waktu_pembayaran = null;
             // kirim sampel stat 2 = bukti kirim sampel uploaded, 3 = pesanan diterima dan divalidasi
-            if ($status_kirim_sampel==3) {
-                $waktu_kirim_sampel = Pemberitahuan::select('WaktuPemberitahuan')
-                                    ->where('IDPesanan', $id_pesanan)
-                                    ->where('IDStatus', 22)
-                                    ->first()->WaktuPemberitahuan;
-                $waktu_kirim_sampel = $waktu_kirim_sampel->toDateTimeString();
+
+            // sisa sampel stat 3 = sisa sampel diterima, 2 = sisa sampel dikirim RESI!!!!!!!!!!
+            if(Pemberitahuan::where('IDPesanan', $id_pesanan)->where('IDStatus', 51)->exists())
+            {
+                $resi_sisa_sampel = DokumenPesanan::select('BuktiPengembalianSampel')->where('IDPesanan', $id_pesanan)
+                                    ->first()->BuktiPengembalianSampel;
             }
-            else $waktu_kirim_sampel = null;
-            // sisa sampel stat 3 = sisa sampel diterima, 2 = sisa sampel dikirim
-            if ($status_sisa_sampel==2) {
-                $waktu_sisa_sampel = Pemberitahuan::select('WaktuPemberitahuan')
-                                    ->where('IDPesanan', $id_pesanan)
-                                    ->where('IDStatus', 51)
-                                    ->first()->WaktuPemberitahuan;
-                $waktu_sisa_sampel = $waktu_sisa_sampel;
-            }
-            else $waktu_sisa_sampel = null;
+            else $resi_sisa_sampel = null;
             // kirim sertifikat 3 = sertifikat diterima, 2 = sertifikat dikirim
-            if ($status_kirim_sertifikat==2) {
-                $waktu_kirim_sertifikat = Pemberitahuan::select('WaktuPemberitahuan')
-                                    ->where('IDPesanan', $id_pesanan)
-                                    ->where('IDStatus', 52)
-                                    ->first()->WaktuPemberitahuan;
-                $waktu_kirim_sertifikat = $waktu_kirim_sertifikat;
+            if(Pemberitahuan::where('IDPesanan', $id_pesanan)->where('IDStatus', 52)->exists())
+            {
+                $resi_sertif = DokumenPesanan::select('BuktiPengirimanSertifikat')->where('IDPesanan', $id_pesanan)
+                                    ->first()->BuktiPengirimanSertifikat;
             }
-            else $waktu_kirim_sertifikat = null;
+            else $resi_sertif = null;
             // pesanan divalidasi idstat = 2
             if(Pemberitahuan::where('IDPesanan', $id_pesanan)->where('IDStatus', 2)->exists())
             {
@@ -395,6 +381,23 @@ class PesananController extends Controller
                 $waktu_selesai = $selesai->WaktuPemberitahuan;
             }
             else $waktu_selesai = NULL;
+
+            // terima sisa sampel param = SisaSampel
+            $sisa_sampel = Pelacakan::select('SisaSampel', 'WaktuTerimaSisa')->where('IDPesanan', $id_pesanan)
+                                    ->first();
+            if($sisa_sampel->SisaSampel == 3){
+                $waktu_terima_sisa = $sisa_sampel->WaktuTerimaSisa;
+            }
+            else $waktu_terima_sisa = null;
+
+            // terima sertifikat param = KirimSertifikat
+            $kirim_sertifikat = Pelacakan::select('KirimSertifikat', 'WaktuTerimaSertif')->where('IDPesanan', $id_pesanan)
+                                    ->first();
+            if($kirim_sertifikat->KirimSertifikat == 3){
+                $waktu_terima_sertif = $kirim_sertifikat->WaktuTerimaSertif;
+            }
+            else $waktu_terima_sertif = null;
+
             // dibatalkan idstat = 6 / 7
             $stat6 = Pemberitahuan::where('IDPesanan', $id_pesanan)->where('IDStatus', 6)->exists();
             $stat7 = Pemberitahuan::where('IDPesanan', $id_pesanan)->where('IDStatus', 7)->exists();
@@ -411,14 +414,52 @@ class PesananController extends Controller
             $ulasan = Pelacakan::select('WaktuUlasan')->where('IDPesanan', $id_pesanan)->first();
             $waktu_ulasan = $ulasan->WaktuUlasan;
 
-
-            $status_pesanan = array('WaktuValidasiPesanan'=>$waktu_validasi_pesanan, 'WaktuDikajiUlang'=>$waktu_dikaji_ulang,
+            // kondisi segementasi status pesanan
+            $dianalisis = Pemberitahuan::where('IDPesanan', $id_pesanan)->where('IDStatus', 4)->exists();
+            $selesai = Pemberitahuan::where('IDPesanan', $id_pesanan)->where('IDStatus', 5)->exists();
+            $batal_pelanggan = Pemberitahuan::where('IDPesanan', $id_pesanan)->where('IDStatus', 6)->exists();
+            $batal_admin = Pemberitahuan::where('IDPesanan', $id_pesanan)->where('IDStatus', 7)->exists();
+            
+            // segmen 3 = batal
+            if($batal_pelanggan) {
+                $status_pesanan = array('WaktuValidasiPesanan'=>$waktu_validasi_pesanan, 'WaktuDikajiUlang'=>$waktu_dikaji_ulang,
                 'StatusUtama'=>$status_utama,
-                'WaktuDianalisis'=>$waktu_dianalisis, 'WaktuSelesai'=>$waktu_selesai, 'WaktuDibatalkan'=>$waktu_dibatalkan, 'WaktuUlasan'=>$waktu_ulasan, 'WaktuPesananDibuat'=>$waktu_pesanan_dibuat,
+                'WaktuDibatalkan'=>$waktu_dibatalkan, 'WaktuPesananDibuat'=>$waktu_pesanan_dibuat,
                 'StatusPembayaran'=>$status_pembayaran, 'WaktuPembayaran'=>$waktu_pembayaran, 
-                'StatusKirimSampel'=>$status_kirim_sampel, 'WaktuKirimSampel'=>$waktu_kirim_sampel,
-                'StatusSisaSampel'=>$status_sisa_sampel, 'WaktuKirimSisa'=>$waktu_sisa_sampel,
-                'StatusKirimSertifikat'=>$status_kirim_sertifikat, 'WaktuKirimSertifikat'=>$waktu_kirim_sertifikat);
+                'StatusKirimSampel'=>$status_kirim_sampel,
+                'StatusSisaSampel'=>$status_sisa_sampel, 'StatusKirimSertifikat'=>$status_kirim_sertifikat);
+            }
+            // segmen 3 = batal
+            elseif($batal_admin) {
+                $alasan_batal = AdministrasiPesanan::select('CatatanPembatalan')->where('IDPesanan', $id_pesanan)
+                                                ->first()->CatatanPembatalan;
+                $status_pesanan = array('WaktuValidasiPesanan'=>$waktu_validasi_pesanan, 'WaktuDikajiUlang'=>$waktu_dikaji_ulang,
+                'StatusUtama'=>$status_utama, 'AlasanBatal'=>$alasan_batal,
+                'WaktuDibatalkan'=>$waktu_dibatalkan, 'WaktuPesananDibuat'=>$waktu_pesanan_dibuat,
+                'StatusPembayaran'=>$status_pembayaran, 'WaktuPembayaran'=>$waktu_pembayaran, 
+                'StatusKirimSampel'=>$status_kirim_sampel,
+                'StatusSisaSampel'=>$status_sisa_sampel, 'StatusKirimSertifikat'=>$status_kirim_sertifikat);
+            }
+
+            // segmen 2 = selesai
+            elseif($selesai) {
+                $status_pesanan = array('WaktuValidasiPesanan'=>$waktu_validasi_pesanan, 'WaktuDikajiUlang'=>$waktu_dikaji_ulang,
+                'StatusUtama'=>$status_utama, 'WaktuDianalisis'=>$waktu_dianalisis, 'WaktuSelesai'=>$waktu_selesai,
+                'WaktuUlasan'=>$waktu_ulasan, 'WaktuPesananDibuat'=>$waktu_pesanan_dibuat, 'StatusPembayaran'=>$status_pembayaran,
+                'WaktuPembayaran'=>$waktu_pembayaran, 'StatusKirimSampel'=>$status_kirim_sampel, 'WaktuTerimaSisa'=>$waktu_terima_sisa,
+                'WaktuTerimaSertif'=>$waktu_terima_sertif, 'StatusSisaSampel'=>$status_sisa_sampel,
+                'ResiPengirimanSisa'=>$resi_sisa_sampel, 'ResiPengirimanSertif'=>$resi_sertif,
+                'StatusKirimSertifikat'=>$status_kirim_sertifikat);
+            }
+            // segmen 1 = dianalisis
+            else {
+                $status_pesanan = array('WaktuValidasiPesanan'=>$waktu_validasi_pesanan, 'WaktuDikajiUlang'=>$waktu_dikaji_ulang,
+                'StatusUtama'=>$status_utama, 'WaktuDianalisis'=>$waktu_dianalisis, 'WaktuPesananDibuat'=>$waktu_pesanan_dibuat,
+                'StatusPembayaran'=>$status_pembayaran, 'WaktuPembayaran'=>$waktu_pembayaran,
+                'StatusKirimSampel'=>$status_kirim_sampel,
+                'StatusSisaSampel'=>$status_sisa_sampel, 'StatusKirimSertifikat'=>$status_kirim_sertifikat);
+            }
+            // segmen 1 = belum dianalisis
 
             return $status_pesanan;
         }
