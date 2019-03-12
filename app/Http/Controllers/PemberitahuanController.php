@@ -35,10 +35,12 @@ class PemberitahuanController extends Controller
             // jika kode sisa sampel dikirim
             elseif($set_status == 51){
                 DokumenPesanan::where('IDPesanan', $id_pesanan)->update(['BuktiPengembalianSampel'=>$request->Resi]);
+                Pelacakan::where('IDPesanan', $id_pesanan)->update(['SisaSampel'=>2]);
             }
             // jika kode sertifikat dikirim
             elseif($set_status == 52){
-                DokumenPesanan::where('IDPesanan', $id_pesanan)->update(['BuktiPengirimanSertifikat'=>$request->Resi]);   
+                DokumenPesanan::where('IDPesanan', $id_pesanan)->update(['BuktiPengirimanSertifikat'=>$request->Resi]);
+                Pelacakan::where('IDPesanan', $id_pesanan)->update(['KirimSertifikat'=>2]);   
             }
 
             //return response()->json(['new status'=>$set_status, 'pel'=>$pelanggan]);
