@@ -290,7 +290,7 @@ class PesananController extends Controller
 
             // terima sertifikat
             elseif($ubah_status == 'TerimaSertifikat'){
-                Pelacakan::where('IDPesanan', $id_pesanan)->update(['KirimSertifikat'=>3, 'WaktuTerimaSertif'=>waktu_sekarang]);
+                Pelacakan::where('IDPesanan', $id_pesanan)->update(['KirimSertifikat'=>3, 'WaktuTerimaSertif'=>$waktu_sekarang]);
 
                 return response()->json(['Status sertifikat'=>3, 'Status'=>200], 200);
             }
