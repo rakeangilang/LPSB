@@ -9,6 +9,7 @@ use App\Pelacakan;
 use App\Pemberitahuan;
 use App\StatusPelacakan;
 use App\AdministrasiPesanan;
+use App\DokumenPesanan;
 use Carbon\Carbon;
 
 class PemberitahuanController extends Controller
@@ -22,10 +23,22 @@ class PemberitahuanController extends Controller
             $id_pesanan = Pesanan::select('IDPesanan')->where('IDPelanggan', $id_pelanggan)->where('IDPesanan', $request->IDPesanan)->first();
             $id_pesanan = $id_pesanan->IDPesanan;
             $set_status = $request->SetStatus;
-            Pelacakan::where('IDPesanan', $id_pesanan)->update(['IDStatus' => $set_status, 'UpdateTerakhir' => $waktu_sekarang]);
+
+            if($set_status!=21 && $set_status!=22 && $set_status!=51 && $set_status!=52){
+                Pelacakan::where('IDPesanan', $id_pesanan)->update(['IDStatus' => $set_status, 'UpdateTerakhir' => $waktu_sekarang]);
+            }
             
+            // jika kode batal
             if($set_status == 7){
                 AdministrasiPesanan::where('IDPesanan', $id_pesanan)->update(['CatatanPembatalan'=>$request->Alasan]);
+            }
+            // jika kode sisa sampel dikirim
+            elseif($set_status == 51){
+                DokumenPesanan::where('IDPesanan', $id_pesanan)->update(['BuktiPengembalianSampel'=>$request->Resi]);
+            }
+            // jika kode sertifikat dikirim
+            elseif($set_status == 52){
+                DokumenPesanan::where('IDPesanan', $id_pesanan)->update(['BuktiPengirimanSertifikat'=>$request->Resi]);   
             }
 
             //return response()->json(['new status'=>$set_status, 'pel'=>$pelanggan]);
@@ -50,10 +63,23 @@ class PemberitahuanController extends Controller
             'IDPelanggan'=>$pel
             ]);
         
+        // jika kode batal
         if($stat == 7){
             $alasan = AdministrasiPesanan::select('CatatanPembatalan')->where('IDPesanan', $pes)->first()->CatatanPembatalan;
 
-            return response()->json(['IDPesanan'=>$pes, 'IDStatus'=>$stat, 'Alasan'=>$alasan]);
+            return response()->json(['IDPesanan'=>$pes, 'IDStatus'=>$stat, 'Alasan'=>$alasan, 'WaktuPemberitahuan'=>$waktu]);
+        }
+        // jika kode sisa sampel dikirim
+        elseif($stat == 51){
+            $resi = DokumenPesanan::select('BuktiPengembalianSampel')->where('IDPesanan', $pes)->first()->BuktiPengembalianSampel;
+
+            return response()->json(['IDPesanan'=>$pes, 'IDStatus'=>$stat, 'Resi'=>$resi, 'WaktuPemberitahuan'=>$waktu]);
+        }
+         // jika kode sertifikat dikirim
+        elseif($stat == 52){
+            $resi = DokumenPesanan::select('BuktiPengirimanSertifikat')->where('IDPesanan', $pes)->first()->BuktiPengirimanSertifikat;
+
+            return response()->json(['IDPesanan'=>$pes, 'IDStatus'=>$stat, 'Resi'=>$resi, 'WaktuPemberitahuan'=>$waktu]);
         }
 
     	return response()->json(['IDPesanan'=>$pes, 'IDStatus'=>$stat, 'WaktuPemberitahuan'=>$waktu]);

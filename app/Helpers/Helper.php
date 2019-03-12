@@ -35,7 +35,7 @@ class Helper
         		'NoPesanan' => $no_pesanan,
         		'IDPelanggan' => $id_pelanggan,
         		'Percepatan' => $request->lama_pengujian,
-        		'KembalikanSampel' => $request->sisa_sampel,
+        		'KembalikanSampel' => $request->sisa_sampel,// 0 = gak diambil, 1 = diambil
         		'TotalHarga' => $request->harga_total,
         		'WaktuPemesanan' => $waktu_sekarang
         		])->IDPesanan;
