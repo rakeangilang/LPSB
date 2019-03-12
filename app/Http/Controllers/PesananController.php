@@ -350,7 +350,7 @@ class PesananController extends Controller
                                     ->where('IDPesanan', $id_pesanan)
                                     ->where('IDStatus', 51)
                                     ->first()->WaktuPemberitahuan;
-                $waktu_sisa_sampel = $waktu_sisa_sampel->toDateTimeString();
+                $waktu_sisa_sampel = $waktu_sisa_sampel;
             }
             else $waktu_sisa_sampel = null;
             // kirim sertifikat 3 = sertifikat diterima, 2 = sertifikat dikirim
@@ -359,7 +359,7 @@ class PesananController extends Controller
                                     ->where('IDPesanan', $id_pesanan)
                                     ->where('IDStatus', 52)
                                     ->first()->WaktuPemberitahuan;
-                $waktu_kirim_sertifikat = $waktu_kirim_sertifikat->toDateTimeString();
+                $waktu_kirim_sertifikat = $waktu_kirim_sertifikat;
             }
             else $waktu_kirim_sertifikat = null;
             // pesanan divalidasi idstat = 2
@@ -417,8 +417,8 @@ class PesananController extends Controller
                 'WaktuDianalisis'=>$waktu_dianalisis, 'WaktuSelesai'=>$waktu_selesai, 'WaktuDibatalkan'=>$waktu_dibatalkan, 'WaktuUlasan'=>$waktu_ulasan, 'WaktuPesananDibuat'=>$waktu_pesanan_dibuat,
                 'StatusPembayaran'=>$status_pembayaran, 'WaktuPembayaran'=>$waktu_pembayaran, 
                 'StatusKirimSampel'=>$status_kirim_sampel, 'WaktuKirimSampel'=>$waktu_kirim_sampel,
-                'StatusSisaSampel'=>$status_sisa_sampel, 'WaktuTerimaSisa'=>$waktu_sisa_sampel,
-                'StatusKirimSertifikat'=>$status_kirim_sertifikat, 'WaktuTerimaSertifikat'=>$waktu_kirim_sertifikat);
+                'StatusSisaSampel'=>$status_sisa_sampel, 'WaktuKirimSisa'=>$waktu_sisa_sampel,
+                'StatusKirimSertifikat'=>$status_kirim_sertifikat, 'WaktuKirimSertifikat'=>$waktu_kirim_sertifikat);
 
             return $status_pesanan;
         }
