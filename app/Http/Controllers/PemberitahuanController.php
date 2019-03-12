@@ -26,7 +26,6 @@ class PemberitahuanController extends Controller
             
             if($set_status == 7){
                 AdministrasiPesanan::where('IDPesanan', $id_pesanan)->update(['CatatanPembatalan'=>$request->Alasan]);
-                Pelacakan::where('IDPesanan', $id_pesanan)->update(['WaktuBatal' => $waktu_sekarang]);
             }
 
             //return response()->json(['new status'=>$set_status, 'pel'=>$pelanggan]);
@@ -54,10 +53,10 @@ class PemberitahuanController extends Controller
         if($stat == 7){
             $alasan = AdministrasiPesanan::select('CatatanPembatalan')->where('IDPesanan', $pes)->first()->CatatanPembatalan;
 
-            return response()->json(['IDPesanan'=>$pes, 'IDStatus'=>$stat, 'WaktuPembatalan'=>$waktu, 'Alasan'=>$alasan]);
+            return response()->json(['IDPesanan'=>$pes, 'IDStatus'=>$stat, 'Alasan'=>$alasan]);
         }
 
-    	return response()->json(['IDPesanan'=>$pes, 'IDStatus'=>$stat, 'WaktuPemberitahuan'=>$waktu, ]);
+    	return response()->json(['IDPesanan'=>$pes, 'IDStatus'=>$stat, 'WaktuPemberitahuan'=>$waktu]);
         }
         catch(\Exception $e) {
             return response()->json(['success'=>false, 'message'=>$e->getMessage(),'Status'=>500], 500);
@@ -76,7 +75,7 @@ class PemberitahuanController extends Controller
             $pemberitahuan->setAttribute('NamaStatus', $nama_status->Status);
         }
 
-        return response()->json(['Pemberitahuans'=>$pemberitahuans]);
+        return response()->json(['Pemberitahuans'=>$pemberitahuans, 'Status'=>200], 200);
         }
         catch(\Exception $e) {
             return response()->json(['success'=>false, 'message'=>$e->getMessage(),'Status'=>500], 500);

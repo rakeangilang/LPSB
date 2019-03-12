@@ -268,14 +268,13 @@ class PesananController extends Controller
                 Pelacakan::where('IDPesanan', $id_pesanan)->update(['IDStatus'=>6]);
                 $alasan = $request->Alasan;
                 AdministrasiPesanan::where('IDPesanan', $id_pesanan)->update(['CatatanPembatalan'=>$alasan]);
-                Pelacakan::where('IDPesanan', $id_pesanan)->update(['WaktuBatal' => $waktu_sekarang]);
 
                 $waktu = Carbon::now('Asia/Jakarta')->toDateTimeString();
 
                 $pemberitahuan = Pemberitahuan::create([
                 'IDPesanan'=>$id_pesanan,
                 'IDStatus'=>6,
-                'WaktuPemberitahuan'=>$waktu,
+                'WaktuPemberitahuan'=>$waktu_sekarang,
                 'IDPelanggan'=>$id_pelanggan
                 ]);
 
