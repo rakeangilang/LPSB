@@ -108,8 +108,16 @@ class PemberitahuanController extends Controller
 
         foreach ($pemberitahuans as $pemberitahuan)
         {
+            // fetch no pesanan/bulan/tahun
+            $id_pesanan = $pemberitahuan->IDPesanan;
+            $pesanan = Pesanan::select('NoPesanan', 'WaktuPemesanan')->where('IDPesanan', $id_pesanan)->first();
+            $bulan = Carbon::parse($pesanan->WaktuPemesanan)->format('m');
+            $tahun = Carbon::parse($pesanan->WaktuPemesanan)->format('y');
+            $no_pesanan = $pesanan->NoPesanan . '/' . $bulan . '/' . $tahun;
+
             $nama_status = StatusPelacakan::select('Status')->where('IDStatus', $pemberitahuan->IDStatus)->first();
             $pemberitahuan->setAttribute('NamaStatus', $nama_status->Status);
+            $pemberitahuan->setAttribute('NoPesanan', $no_pesanan);
         }
 
         return response()->json(['Pemberitahuans'=>$pemberitahuans, 'Status'=>200], 200);
