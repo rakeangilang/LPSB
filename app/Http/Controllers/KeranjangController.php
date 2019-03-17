@@ -46,7 +46,7 @@ class KeranjangController extends Controller
     {
         try{
         $id_pelanggan = $request->user()->IDPelanggan;
-        $keranjangs = Keranjang::where('IDPelanggan', $id_pelanggan)->get();
+        $keranjangs = Keranjang::where('IDPelanggan', $id_pelanggan)->orderBy('IDItem', 'desc')->get();
 
         foreach($keranjangs as $keranjang){
             $katalog = Katalog::select('JenisAnalisis', 'Metode', 'HargaIPB', 'HargaNONIPB')->where('IDKatalog', $keranjang->IDKatalog)->first();
@@ -89,13 +89,14 @@ class KeranjangController extends Controller
     public function pesanItem(User $user, Request $request)
     {
         try{
-        // chunk some datas
+        // chunk some data
             $res = $request;
             $id_pelanggan = $request->user()->IDPelanggan;
             $list_keranjang = $request->listKeranjang;
             $data_user = $request->data_user;
             $data_rek = $request->data_rek;
             $keterangan = $request->KeteranganPesanan;
+            $kembalikan_sisa = $request->sisa_sampel;
 
         // buat pesanan then get IDPesanan
             $id_pesanan = Helper::instance()->newPesanan($request, $id_pelanggan);
@@ -104,7 +105,7 @@ class KeranjangController extends Controller
         // buat dokumen pesanan
             $make_dokumen = Helper::instance()->newDokumenPesanan($id_pesanan);
         // buat pelacakan
-            $make_pelacakan = Helper::instance()->newPelacakan($id_pesanan);
+            $make_pelacakan = Helper::instance()->newPelacakan($id_pesanan, $kembalikan_sisa);
         // migrasi keranjang ke sampel
             $make_sampel = Helper::instance()->addSampels($list_keranjang, $id_pesanan, $id_pelanggan);
 
