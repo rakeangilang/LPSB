@@ -19,4 +19,9 @@ Auth::routes();
 
 Route::get('/dashboard', 'HomeController@index')->name('dashboard');
 
+// KATALOG
 Route::get('/katalog/tambah', 'HomeController@tambahKatalog')->name('katalog-tambah');
+
+
+// PESANAN
+Route::get('/pesanan', 'HomeController@listPesanan')->name('pesanan-list');

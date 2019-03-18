@@ -48,8 +48,8 @@
                 <li><a href="index2.html"><i class="fa fa-circle-o"></i> Kategori</a></li>
               </ul>
             </li>
-            <li class="treeview menu-open">
-              <a href="#">
+            <li class="menu-open">
+              <a href="{{ route('pesanan-list')}}">
                 <i class="fa fa-shopping-cart"></i> <span>Pesanan</span>
               </a>
             </li>

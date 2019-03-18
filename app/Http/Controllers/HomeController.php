@@ -30,4 +30,8 @@ class HomeController extends Controller
     {
         return view('katalog-tambah');
     }
+
+    public function listPesanan(){
+        return view('pesanan');
+    }
 }
