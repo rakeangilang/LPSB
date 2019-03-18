@@ -12,9 +12,11 @@
 */
 
 Route::get('/', function () {
-    return view('welcome');
+    return view('index');
 });
 
 Auth::routes();
 
-Route::get('/home', 'HomeController@index')->name('home');
+Route::get('/dashboard', 'HomeController@index')->name('dashboard');
+
+Route::get('/katalog/tambah', 'HomeController@tambahKatalog')->name('katalog-tambah');
