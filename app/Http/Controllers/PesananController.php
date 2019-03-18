@@ -308,6 +308,34 @@ class PesananController extends Controller
         
     }
 
+    public function getResi(User $user, Request $request)
+    {
+        try{
+            $id_pelanggan = $request->user()->IDPelanggan;
+            $id_pesanan = Pesanan::select('IDPesanan')->where('IDPelanggan', $id_pelanggan)
+                                ->where('IDPesanan', $request->IDPesanan)->first()->IDPesanan;
+            $resi = DokumenPesanan::select('BuktiPengiriman')->where('IDPesanan', $id_pesanan)->first()->BuktiPengiriman;
+    
+            return response()->json(['IDPesanan'=>$id_pesanan, 'Resi'=>$resi, 'Status'=>200], 200);
+        }
+        catch(\Exception $e) {
+            return response()->json(['success'=>false, 'message'=>$e->getMessage(),'Status'=>500], 500);
+        }
+        
+    }
+
+    public function gantiResi(User $user, Request $request)
+    {
+        try{
+            return response()->json(['IDPesanan'=>$id_pesanan, 'Resi'=>$resi, 'Status'=>200], 200);
+        }
+        catch(\Exception $e) {
+            return response()->json(['success'=>false, 'message'=>$e->getMessage(),'Status'=>500], 500);
+        }
+    }
+
+
+
     private function getStatus($id_pesanan, $id_pelanggan)
     {
         try
@@ -447,7 +475,7 @@ class PesananController extends Controller
                 'StatusUtama'=>$status_utama, 'WaktuDianalisis'=>$waktu_dianalisis, 'WaktuSelesai'=>$waktu_selesai,
                 'WaktuUlasan'=>$waktu_ulasan, 'WaktuPesananDibuat'=>$waktu_pesanan_dibuat, 'StatusPembayaran'=>$status_pembayaran,
                 'WaktuPembayaran'=>$waktu_pembayaran, 'StatusKirimSampel'=>$status_kirim_sampel, 'WaktuTerimaSisa'=>$waktu_terima_sisa,
-                'WaktuTerimaSertif'=>$waktu_terima_sertif, 'StatusSisaSampel'=>$status_sisa_sampel,
+                'WaktuTerimaSertifikat'=>$waktu_terima_sertif, 'StatusSisaSampel'=>$status_sisa_sampel,
                 'ResiPengirimanSisa'=>$resi_sisa_sampel, 'ResiPengirimanSertif'=>$resi_sertif,
                 'StatusKirimSertifikat'=>$status_kirim_sertifikat);
             }

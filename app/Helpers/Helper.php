@@ -91,12 +91,13 @@ class Helper
         }
     }
 
-    public function newPelacakan($id_pesanan)
+    public function newPelacakan($id_pesanan, $kembalikan_sisa)
     {
         try
         {
             Pelacakan::create([
-            	'IDPesanan' => $id_pesanan
+				'IDPesanan' => $id_pesanan,
+				'SisaSampel' => $kembalikan_sisa // 0 = gak diambil, 1 = diambil
             	]);
 
             return 0;
