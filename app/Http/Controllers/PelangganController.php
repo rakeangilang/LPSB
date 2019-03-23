@@ -74,7 +74,9 @@ class PelangganController extends Controller
         $no_identitas = $request->NoIdentitas;
         $no_npwp = $request->NoNPWP;
 
-        User::where('IDPelanggan', $id_pelanggan)->update([
+        if($perusahaan == 'Institut Pertanian Bogor')
+        {
+            User::where('IDPelanggan', $id_pelanggan)->update([
                 'Nama' => $nama,
                 'Email' => $email,
                 'Perusahaan' => $perusahaan,
@@ -96,7 +98,35 @@ class PelangganController extends Controller
             'NoIdentitas' => $no_identitas,
             'NoNPWP' => $no_npwp,
             'Status' => 200
+            ], 200);            
+        }
+
+        else 
+        {
+            User::where('IDPelanggan', $id_pelanggan)->update([
+                'Nama' => $nama,
+                'Email' => $email,
+                'Perusahaan' => $perusahaan,
+                'Alamat' => $alamat,
+                'NoHP' => $no_hp,
+                'NoIdentitas' => null,
+                'NoNPWP' => $no_npwp
+            ]);
+
+        return response()->json([
+            'success'=>true,
+            'message'=>'Informasi pengguna berhasil disimpan',
+            'Nama' => $nama,
+            'Email' => $email,
+            'api_token' => $api_token,
+            'Perusahaan' => $perusahaan,
+            'Alamat' => $alamat,
+            'NoHP' => $no_hp,
+            'NoIdentitas' => null,
+            'NoNPWP' => $no_npwp,
+            'Status' => 200
             ], 200);
+        }
         }
         catch(\Exception $e){
             return response()->json(['success'=>false, 'message'=>$e->getMessage(),'Status'=>500], 500);

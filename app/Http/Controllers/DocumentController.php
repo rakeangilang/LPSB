@@ -1,9 +1,3 @@
-*api.php
-
-Route::get('/generatePermohonanAnalisis', 'DocumentController@generateFormPermohonanAnalisis');
-
-*make: DocumentController
-
 <?php
 
 namespace App\Http\Controllers;
@@ -48,5 +42,3 @@ class DocumentController extends Controller
         return response()->download(storage_path('tes.docx'));
     }
 }
-
-*

@@ -27,25 +27,50 @@ class ApiAuthController extends Controller
           'Status' => 409
           ], 409);
       }
-      else {
-        User::create([
-        'Nama' => $nama,
-        'Email' => $email,
-        'Perusahaan' => $perusahaan,
-        'Password' => $password,
-        'api_token' => $api_token
-      ]);
 
-      return response()->json([
-        'success'=>true,
-        'message'=>'Register berhasil, simpan data pengguna',
-        'Nama' => $nama,
-        'Email' => $email,
-        'api_token' => $api_token,
-        'Status' => 201
-        ], 201);
-      }
+      else {
+        if($perusahaan == 'Institut Pertanian Bogor'){
+            User::create([
+            'Nama' => $nama,
+            'Email' => $email,
+            'Perusahaan' => $perusahaan,
+            'NoIdentitas' => $request['NoIdentitas'],
+            'Password' => $password,
+            'api_token' => $api_token
+            ]);
+
+            return response()->json([
+            'success'=>true,
+            'message'=>'Register berhasil, simpan data pengguna',
+            'Nama' => $nama,
+            'Perusahaan' => $perusahaan,
+            'NoIdentitas' => $request['NoIdentitas'],
+            'Email' => $email,
+            'api_token' => $api_token,
+            'Status' => 200], 201);
         }
+
+        else{
+          User::create([
+          'Nama' => $nama,
+          'Email' => $email,
+          'Perusahaan' => $perusahaan,
+          'Password' => $password,
+          'api_token' => $api_token
+          ]);
+
+          return response()->json([
+          'success'=>true,
+          'message'=>'Register berhasil, simpan data pengguna',
+          'Nama' => $nama,
+          'Email' => $email,
+          'api_token' => $api_token,
+          'Status' => 200], 201);
+        }
+
+      }
+      
+      }
         catch(\Exception $e){
             return response()->json(['success'=>false, 'message'=>$e->getMessage(),'Status'=>500], 500);
         }
