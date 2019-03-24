@@ -18,12 +18,12 @@ class DocumentController extends Controller
 
         $nama = "hehe";
         $nim = "G6415";
-        $template_path = storage_path('templates/tes1.docx');
+        $template_path = storage_path('templates\tes1.doc');
         $hasil_path = storage_path('permohonan_analisis');
         $templateProcessor = new \PhpOffice\PhpWord\TemplateProcessor($template_path);
         $templateProcessor->setValue('Nama', $nama);
         $templateProcessor->setValue('NIM', $nim);
-        $templateProcessor->setImageValue('gambar', array('path' => storage_path('templates/ttd.png'), 'width'=>200, 'height'=>200));
+        $templateProcessor->setImageValue('gambar', array('path' => storage_path('templates\Day1Recap.PNG'), 'width'=>200, 'height'=>200));
 
         $filename = 'Hasil ' . $nama . '.docx';
  //     Storage::put('')

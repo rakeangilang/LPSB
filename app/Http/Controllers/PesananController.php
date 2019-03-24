@@ -13,6 +13,7 @@ use App\User;
 use App\Sampel;
 use App\Katalog;
 use App\Pemberitahuan;
+use App\Survey;
 use Carbon\Carbon;
 
 class PesananController extends Controller
@@ -322,6 +323,47 @@ class PesananController extends Controller
             return response()->json(['success'=>false, 'message'=>$e->getMessage(),'Status'=>500], 200);
         }
         
+    }
+
+    public function simpanSurvey(User $user, Request $request)
+    {
+        try
+        {
+            $id_pelanggan = $request->user()->IDPelanggan;
+            $id_pesanan = Pesanan::select('IDPesanan')->where('IDPelanggan', $id_pelanggan)
+                                ->where('IDPesanan', $request->IDPesanan)->first()->IDPesanan;
+            
+            Survey::create([
+                'IDPesanan' => $id_pesanan,
+                'Survey1' => $request->survey1,
+                'Survey2' => $request->survey2,
+                'Survey3' => $request->survey3,
+                'Survey4' => $request->survey4,
+                'Survey5' => $request->survey5,
+                'Survey6' => $request->survey6,
+                'Survey7' => $request->survey7,
+                'Survey8' => $request->survey8,
+                'Survey9' => $request->survey9
+            ]);
+
+            return response()->json([
+                'message' => 'Penilaian berhasil disimpan',
+                'IDPesanan' => $id_pesanan,
+                'survey1' => $request->survey1,
+                'survey2' => $request->survey2,
+                'survey3' => $request->survey3,
+                'survey4' => $request->survey4,
+                'survey5' => $request->survey5,
+                'survey6' => $request->survey6,
+                'survey7' => $request->survey7,
+                'survey8' => $request->survey8,
+                'survey9' => $request->survey9,
+                'Status' => 200
+            ], 200);
+        }
+        catch(\Exception $e){
+            return response()->json(['success'=>false, 'message'=>$e->getMessage(),'Status'=>500], 200);
+        }
     }
 
     public function gantiResi(User $user, Request $request)
