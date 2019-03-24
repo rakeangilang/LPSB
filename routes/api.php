@@ -50,7 +50,6 @@ Route::post('/kirimSampel', 'PesananController@kirimSampel')->middleware('auth:a
 Route::post('/bayar', 'PesananController@bayar')->middleware('auth:api');
 Route::post('/ubahStatusByPelanggan', 'PesananController@ubahStatusByPelanggan')->middleware('auth:api');
 Route::post('/getResi', 'PesananController@getResi')->middleware('auth:api');
-Route::post('/simpanSurvey', 'PesananController@simpanSurvey')->middleware('auth:api');
 
 // Pemberitahuan
 Route::post('/setStatusByAdmin', 'PemberitahuanController@setStatusByAdmin')->middleware('auth:api');

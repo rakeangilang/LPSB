@@ -99,8 +99,35 @@ class PesananController extends Controller
             Pelacakan::where('IDPesanan', $id_pesanan)->update([
                 'WaktuUlasan' => $waktu_sekarang
                 ]);
+            
+            Survey::create([
+                'IDPesanan' => $id_pesanan,
+                'Survey1' => $request->survey1,
+                'Survey2' => $request->survey2,
+                'Survey3' => $request->survey3,
+                'Survey4' => $request->survey4,
+                'Survey5' => $request->survey5,
+                'Survey6' => $request->survey6,
+                'Survey7' => $request->survey7,
+                'Survey8' => $request->survey8,
+                'Survey9' => $request->survey9
+            ]);
 
-            return response()->json(['success'=>true, 'message'=>'Ulasan berhasil disimpan', 'Status'=>200], 200);
+            return response()->json([
+                'message' => 'Penilaian berhasil disimpan',
+                'IDPesanan' => $id_pesanan,
+                'survey1' => $request->survey1,
+                'survey2' => $request->survey2,
+                'survey3' => $request->survey3,
+                'survey4' => $request->survey4,
+                'survey5' => $request->survey5,
+                'survey6' => $request->survey6,
+                'survey7' => $request->survey7,
+                'survey8' => $request->survey8,
+                'survey9' => $request->survey9,
+                'Status' => 200
+            ], 200);
+            
         }
         catch(\Exception $e) {
             return response()->json(['success'=>false, 'message'=>$e->getMessage(),'Status'=>500], 200);
@@ -115,8 +142,22 @@ class PesananController extends Controller
 
             $ulasan = Pesanan::select('Ulasan')->where('IDPesanan', $id_pesanan)->where('IDPelanggan', $id_pelanggan)->first()->Ulasan;
             $waktu_ulasan = Pelacakan::select('WaktuUlasan')->where('IDPesanan', $id_pesanan)->first()->WaktuUlasan;
+            $penilaian = Survey::where('IDPesanan', $id_pesanan)->first();
 
-            return response()->json(['success'=>true, 'Ulasan'=>$ulasan, 'WaktuUlasan'=>$waktu_ulasan, 'Status'=>200], 200);
+            return response()->json([
+                'success'=>true,
+                'Ulasan'=>$ulasan,
+                'WaktuUlasan'=>$waktu_ulasan,
+                'survey1' => $penilaian->Survey1,
+                'survey2' => $penilaian->Survey2,
+                'survey3' => $penilaian->Survey3,
+                'survey4' => $penilaian->Survey4,
+                'survey5' => $penilaian->Survey5,
+                'survey6' => $penilaian->Survey6,
+                'survey7' => $penilaian->Survey7,
+                'survey8' => $penilaian->Survey8,
+                'survey9' => $penilaian->Survey9,
+                'Status'=>200], 200);
         }
         catch(\Exception $e) {
             return response()->json(['success'=>false, 'message'=>$e->getMessage(),'Status'=>500], 200);
@@ -323,47 +364,6 @@ class PesananController extends Controller
             return response()->json(['success'=>false, 'message'=>$e->getMessage(),'Status'=>500], 200);
         }
         
-    }
-
-    public function simpanSurvey(User $user, Request $request)
-    {
-        try
-        {
-            $id_pelanggan = $request->user()->IDPelanggan;
-            $id_pesanan = Pesanan::select('IDPesanan')->where('IDPelanggan', $id_pelanggan)
-                                ->where('IDPesanan', $request->IDPesanan)->first()->IDPesanan;
-            
-            Survey::create([
-                'IDPesanan' => $id_pesanan,
-                'Survey1' => $request->survey1,
-                'Survey2' => $request->survey2,
-                'Survey3' => $request->survey3,
-                'Survey4' => $request->survey4,
-                'Survey5' => $request->survey5,
-                'Survey6' => $request->survey6,
-                'Survey7' => $request->survey7,
-                'Survey8' => $request->survey8,
-                'Survey9' => $request->survey9
-            ]);
-
-            return response()->json([
-                'message' => 'Penilaian berhasil disimpan',
-                'IDPesanan' => $id_pesanan,
-                'survey1' => $request->survey1,
-                'survey2' => $request->survey2,
-                'survey3' => $request->survey3,
-                'survey4' => $request->survey4,
-                'survey5' => $request->survey5,
-                'survey6' => $request->survey6,
-                'survey7' => $request->survey7,
-                'survey8' => $request->survey8,
-                'survey9' => $request->survey9,
-                'Status' => 200
-            ], 200);
-        }
-        catch(\Exception $e){
-            return response()->json(['success'=>false, 'message'=>$e->getMessage(),'Status'=>500], 200);
-        }
     }
 
     public function gantiResi(User $user, Request $request)
