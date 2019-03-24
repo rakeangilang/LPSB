@@ -116,7 +116,7 @@ class KeranjangController extends Controller
             else{
                 $success_status = 200;
             }
-            return response()->json(['id_pesanan' => $id_pesanan, 'status' => $success_status, 'adm_status' => $make_administrasi, 'dok_status' => $make_dokumen, 'pel_status' => $make_pelacakan, 'sam_status' => $make_sampel]); 
+            return response()->json(['id_pesanan' => $id_pesanan, 'Status' => $success_status, 'adm_status' => $make_administrasi, 'dok_status' => $make_dokumen, 'pel_status' => $make_pelacakan, 'sam_status' => $make_sampel], 200); 
         }
 
 
