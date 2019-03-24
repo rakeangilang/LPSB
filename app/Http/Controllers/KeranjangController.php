@@ -114,14 +114,14 @@ class KeranjangController extends Controller
                 $success_status = 500;
             }
             else{
-                $success_status = 0;
+                $success_status = 200;
             }
             return response()->json(['id_pesanan' => $id_pesanan, 'status' => $success_status, 'adm_status' => $make_administrasi, 'dok_status' => $make_dokumen, 'pel_status' => $make_pelacakan, 'sam_status' => $make_sampel]); 
         }
 
 
         catch(\Exception $e){
-            return response()->json(['success'=> $list_keranjang['JenisSampel'], 'message'=>$e->getMessage(),'Status'=>501], 200);
+            return response()->json(['success'=> $list_keranjang['JenisSampel'], 'message'=>$e->getMessage(),'Status'=>500], 200);
         }
     }
 }
