@@ -25,7 +25,7 @@ class ApiAuthController extends Controller
           'success'=>false,
           'message'=>'Email sudah terdaftar',
           'Status' => 409
-          ], 409);
+          ], 200);
       }
 
       else {
@@ -47,7 +47,7 @@ class ApiAuthController extends Controller
             'NoIdentitas' => $request['NoIdentitas'],
             'Email' => $email,
             'api_token' => $api_token,
-            'Status' => 200], 201);
+            'Status' => 201], 200);
         }
 
         else{
@@ -63,16 +63,18 @@ class ApiAuthController extends Controller
           'success'=>true,
           'message'=>'Register berhasil, simpan data pengguna',
           'Nama' => $nama,
+          'Perusahaan' => $perusahaan,
+          'NoIdentitas' => null,
           'Email' => $email,
           'api_token' => $api_token,
-          'Status' => 200], 201);
+          'Status' => 201], 200);
         }
 
       }
       
       }
         catch(\Exception $e){
-            return response()->json(['success'=>false, 'message'=>$e->getMessage(),'Status'=>500], 500);
+            return response()->json(['success'=>false, 'message'=>$e->getMessage(),'Status'=>500], 200);
         }
     }
 
@@ -81,7 +83,7 @@ class ApiAuthController extends Controller
       try{
           if(!Auth::attempt(['Email' => $request->Email, 'password' => $request->Password]))
       {
-          return response()->json(['error' => "Email atau password salah", "Status" => 400], 400);
+          return response()->json(['error' => "Email atau password salah", "Status" => 400], 200);
       }
 
         $user = $user->find(Auth::user()->IDPelanggan);
@@ -112,7 +114,7 @@ class ApiAuthController extends Controller
         ], 200);
         }
         catch(\Exception $e){
-            return response()->json(['success'=>false, 'message'=>$e->getMessage(),'Status'=>500], 500);
+            return response()->json(['success'=>false, 'message'=>$e->getMessage(),'Status'=>500], 200);
         }
     }
 }

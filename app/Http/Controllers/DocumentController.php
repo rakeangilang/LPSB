@@ -36,7 +36,7 @@ class DocumentController extends Controller
             $objWriter->save(storage_path('tes.docx'));
         }
         catch(\Exception $e) {
-            return response()->json(['success'=>false, 'message'=>$e->getMessage(),'Status'=>500], 500);
+            return response()->json(['success'=>false, 'message'=>$e->getMessage(),'Status'=>500], 200);
         }
 
         return response()->download(storage_path('tes.docx'));

@@ -23,7 +23,7 @@ class KatalogController extends Controller
             ], 200);
         }
         catch(\Exception $e){
-            return response()->json(['success'=>false, 'message'=>$e->getMessage(),'Status'=>500], 500);
+            return response()->json(['success'=>false, 'message'=>$e->getMessage(),'Status'=>500], 200);
         }
     }
 
@@ -40,7 +40,7 @@ class KatalogController extends Controller
             ], 200);
         }
         catch(\Exception $e){
-            return response()->json(['success'=>false, 'message'=>$e->getMessage(),'Status'=>500], 500);
+            return response()->json(['success'=>false, 'message'=>$e->getMessage(),'Status'=>500], 200);
         }
     }
 
@@ -87,7 +87,7 @@ class KatalogController extends Controller
             ], 200);
         }
         catch(\Exception $e){
-            return response()->json(['success'=>false, 'message'=>$e->getMessage(),'Status'=>500], 500);
+            return response()->json(['success'=>false, 'message'=>$e->getMessage(),'Status'=>500], 200);
         }        
     }
 
@@ -104,7 +104,7 @@ class KatalogController extends Controller
             ], 200);
         }
         catch(\Exception $e){
-            return response()->json(['success'=>false, 'message'=>$e->getMessage(),'Status'=>500], 500);
+            return response()->json(['success'=>false, 'message'=>$e->getMessage(),'Status'=>500], 200);
         }
         
     }
@@ -129,7 +129,7 @@ class KatalogController extends Controller
             ], 200);
         }
         catch(\Exception $e){
-            return response()->json(['success'=>false, 'message'=>$e->getMessage(),'Status'=>500], 500);
+            return response()->json(['success'=>false, 'message'=>$e->getMessage(),'Status'=>500], 200);
         }
         
     }
@@ -161,7 +161,7 @@ class KatalogController extends Controller
             ], 200);
         }
         catch(\Exception $e){
-            return response()->json(['success'=>false, 'message'=>$e->getMessage(),'Status'=>500], 500);
+            return response()->json(['success'=>false, 'message'=>$e->getMessage(),'Status'=>500], 200);
         }
     }    
 }
@@ -170,5 +170,5 @@ class KatalogController extends Controller
             
         }
         catch(\Exception $e){
-            return response()->json(['success'=>false, 'message'=>$e->getMessage(),'Status'=>500], 500);
+            return response()->json(['success'=>false, 'message'=>$e->getMessage(),'Status'=>500], 200);
         }

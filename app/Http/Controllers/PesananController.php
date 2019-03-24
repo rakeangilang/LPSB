@@ -78,7 +78,7 @@ class PesananController extends Controller
     	return response()->json(['success'=>true, 'AllPesanan'=>$pesanans, 'Status'=>200], 200);
         }
         catch(\Exception $e){
-            return response()->json(['success'=>false, 'message'=>$e->getMessage(),'Status'=>500], 500);
+            return response()->json(['success'=>false, 'message'=>$e->getMessage(),'Status'=>500], 200);
         }
     	
     }
@@ -102,7 +102,7 @@ class PesananController extends Controller
             return response()->json(['success'=>true, 'message'=>'Ulasan berhasil disimpan', 'Status'=>200], 200);
         }
         catch(\Exception $e) {
-            return response()->json(['success'=>false, 'message'=>$e->getMessage(),'Status'=>500], 500);
+            return response()->json(['success'=>false, 'message'=>$e->getMessage(),'Status'=>500], 200);
         }
     }
 
@@ -118,7 +118,7 @@ class PesananController extends Controller
             return response()->json(['success'=>true, 'Ulasan'=>$ulasan, 'WaktuUlasan'=>$waktu_ulasan, 'Status'=>200], 200);
         }
         catch(\Exception $e) {
-            return response()->json(['success'=>false, 'message'=>$e->getMessage(),'Status'=>500], 500);
+            return response()->json(['success'=>false, 'message'=>$e->getMessage(),'Status'=>500], 200);
         }
     }
 
@@ -166,7 +166,7 @@ class PesananController extends Controller
                 'Status'=>200], 200);
         }
         catch(\Exception $e) {
-            return response()->json(['success'=>false, 'message'=>$e->getMessage(),'Status'=>500], 500);
+            return response()->json(['success'=>false, 'message'=>$e->getMessage(),'Status'=>500], 200);
         }
     }
 
@@ -190,7 +190,7 @@ class PesananController extends Controller
             return response()->json(['NoResi'=>$resi,'Status'=>200], 200);
         }
         catch(\Exception $e){
-            return response()->json(['success'=>false, 'message'=>$e->getMessage(),'Status'=>500], 500);
+            return response()->json(['success'=>false, 'message'=>$e->getMessage(),'Status'=>500], 200);
         }
     }
 
@@ -231,7 +231,7 @@ class PesananController extends Controller
                 'Status'=>200], 200);
         }
         catch(\Exception $e){
-            return response()->json(['success'=>false, 'message'=>$e->getMessage(),'Status'=>500], 500);
+            return response()->json(['success'=>false, 'message'=>$e->getMessage(),'Status'=>500], 200);
         }
     }
 
@@ -303,7 +303,7 @@ class PesananController extends Controller
             }
         }
         catch(\Exception $e) {
-            return response()->json(['success'=>false, 'message'=>$e->getMessage(),'Status'=>500], 500);
+            return response()->json(['success'=>false, 'message'=>$e->getMessage(),'Status'=>500], 200);
         }
         
     }
@@ -319,7 +319,7 @@ class PesananController extends Controller
             return response()->json(['IDPesanan'=>$id_pesanan, 'Resi'=>$resi, 'Status'=>200], 200);
         }
         catch(\Exception $e) {
-            return response()->json(['success'=>false, 'message'=>$e->getMessage(),'Status'=>500], 500);
+            return response()->json(['success'=>false, 'message'=>$e->getMessage(),'Status'=>500], 200);
         }
         
     }
@@ -330,7 +330,7 @@ class PesananController extends Controller
             return response()->json(['IDPesanan'=>$id_pesanan, 'Resi'=>$resi, 'Status'=>200], 200);
         }
         catch(\Exception $e) {
-            return response()->json(['success'=>false, 'message'=>$e->getMessage(),'Status'=>500], 500);
+            return response()->json(['success'=>false, 'message'=>$e->getMessage(),'Status'=>500], 200);
         }
     }
 
@@ -492,7 +492,7 @@ class PesananController extends Controller
             return $status_pesanan;
         }
         catch(\Exception $e){
-            return response()->json(['success'=>false, 'message'=>$e->getMessage(),'Status'=>500], 500);
+            return response()->json(['success'=>false, 'message'=>$e->getMessage(),'Status'=>500], 200);
         }
     }
 }

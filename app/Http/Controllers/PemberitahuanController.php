@@ -56,7 +56,7 @@ class PemberitahuanController extends Controller
             return redirect()->route('newPemberitahuan', ['pes'=>$id_pesanan,'stat'=>$set_status, 'pel'=>$id_pelanggan]);
         }
         catch(\Exception $e) {
-            return response()->json(['success'=>false, 'message'=>$e->getMessage(),'Status'=>500], 500);
+            return response()->json(['success'=>false, 'message'=>$e->getMessage(),'Status'=>500], 200);
         }
     	
     }
@@ -96,7 +96,7 @@ class PemberitahuanController extends Controller
     	return response()->json(['IDPesanan'=>$pes, 'IDStatus'=>$stat, 'WaktuPemberitahuan'=>$waktu]);
         }
         catch(\Exception $e) {
-            return response()->json(['success'=>false, 'message'=>$e->getMessage(),'Status'=>500], 500);
+            return response()->json(['success'=>false, 'message'=>$e->getMessage(),'Status'=>500], 200);
         }
     }
 
@@ -123,7 +123,7 @@ class PemberitahuanController extends Controller
         return response()->json(['Pemberitahuans'=>$pemberitahuans, 'Status'=>200], 200);
         }
         catch(\Exception $e) {
-            return response()->json(['success'=>false, 'message'=>$e->getMessage(),'Status'=>500], 500);
+            return response()->json(['success'=>false, 'message'=>$e->getMessage(),'Status'=>500], 200);
         }
     }
 
@@ -131,7 +131,7 @@ class PemberitahuanController extends Controller
     {
         try{
             $id_pelanggan = $request->user()->IDPelanggan;
-        $id_pemberitahuan = $request->IDPemberitahuan;
+            $id_pemberitahuan = $request->IDPemberitahuan;
 
         Pemberitahuan::where('IDPemberitahuan', $id_pemberitahuan)->where('IDPelanggan', $id_pelanggan)
                     ->update(['Dilihat' => 1 ]);
@@ -139,7 +139,7 @@ class PemberitahuanController extends Controller
         return response()->json(['message'=>'Pemberitahuan telah dibaca', 'Status'=>200], 200);
         }
         catch(\Exception $e) {
-            return response()->json(['success'=>false, 'message'=>$e->getMessage(),'Status'=>500], 500);
+            return response()->json(['success'=>false, 'message'=>$e->getMessage(),'Status'=>500], 200);
         }
     }
 }

@@ -38,7 +38,7 @@ class KeranjangController extends Controller
             ], 201);
         }
         catch(\Exception $e){
-            return response()->json(['success'=>false, 'message'=>$e->getMessage(),'Status'=>500], 500);
+            return response()->json(['success'=>false, 'message'=>$e->getMessage(),'Status'=>500], 200);
         }
     }
 
@@ -64,7 +64,7 @@ class KeranjangController extends Controller
             ], 200);            
         }
         catch(\Exception $e){
-            return response()->json(['success'=>false, 'message'=>$e->getMessage(),'Status'=>500], 500);
+            return response()->json(['success'=>false, 'message'=>$e->getMessage(),'Status'=>500], 200);
         }
     }
 
@@ -82,7 +82,7 @@ class KeranjangController extends Controller
             ], 200);
         }
         catch(\Exception $e){
-            return response()->json(['success'=>false, 'message'=>$e->getMessage(),'Status'=>500], 500);
+            return response()->json(['success'=>false, 'message'=>$e->getMessage(),'Status'=>500], 200);
         }
     }
 
@@ -121,7 +121,7 @@ class KeranjangController extends Controller
 
 
         catch(\Exception $e){
-            return response()->json(['success'=> $list_keranjang['JenisSampel'], 'message'=>$e->getMessage(),'Status'=>501], 500);
+            return response()->json(['success'=> $list_keranjang['JenisSampel'], 'message'=>$e->getMessage(),'Status'=>501], 200);
         }
     }
 }
