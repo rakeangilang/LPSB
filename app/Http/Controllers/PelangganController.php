@@ -8,27 +8,6 @@ use App\User;
 class PelangganController extends Controller
 {
     //
-    public function getInfoRekening(User $user, Request $request)
-    {
-        try{
-        $pelanggan = $request->user();
-        $nama_rekening = $pelanggan->NamaRekening;
-        $nama_bank = $pelanggan->NamaBank;
-        $no_rekening = $pelanggan->NoRekening;
-
-        return response()->json([
-            'success'=>true,
-            'message'=>'Informasi rekening berhasil diambil',
-            'NamaRekening' => $nama_rekening,
-            'NamaBank' => $nama_bank,
-            'NoRekening' => $no_rekening,
-            'Status' => 200
-            ], 200);
-        }
-        catch(\Exception $e){
-            return response()->json(['success'=>false, 'message'=>$e->getMessage(),'Status'=>500], 200);
-        }
-    }
 
     public function getProfil(User $user, Request $request)
     {
@@ -127,35 +106,6 @@ class PelangganController extends Controller
             'Status' => 200
             ], 200);
         }
-        }
-        catch(\Exception $e){
-            return response()->json(['success'=>false, 'message'=>$e->getMessage(),'Status'=>500], 200);
-        }
-    }
-
-    public function simpanRekening(User $user, Request $request)
-    {
-        try{
-        $nama_rekening = $request->NamaRekening;
-        $nama_bank = $request->NamaBank;
-        $no_rekening = $request->NoRekening;
-
-        $id_pelanggan = $request->user()->IDPelanggan;
-
-        User::where('IDPelanggan', $id_pelanggan)->update([
-            'NamaRekening' => $nama_rekening,
-            'NamaBank' => $nama_bank,
-            'NoRekening' => $no_rekening
-            ]);
-
-        return response()->json([
-            'success'=>true,
-            'message'=>'Informasi rekening berhasil disimpan',
-            'NamaRekening' => $nama_rekening,
-            'NamaBank' => $nama_bank,
-            'NoRekening' => $no_rekening,
-            'Status' => 200
-            ], 200);
         }
         catch(\Exception $e){
             return response()->json(['success'=>false, 'message'=>$e->getMessage(),'Status'=>500], 200);
