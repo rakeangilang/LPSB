@@ -399,7 +399,7 @@ class PesananController extends Controller
                                     ->where('IDPesanan', $id_pesanan)
                                     ->where('IDStatus', 21)
                                     ->first()->WaktuPemberitahuan;
-                $waktu_pembayaran = $waktu_pembayaran->toDateTimeString();
+                $waktu_pembayaran = $waktu_pembayaran;
             }
             else $waktu_pembayaran = null;
             // kirim sampel stat 2 = bukti kirim sampel uploaded, 3 = pesanan diterima dan divalidasi
