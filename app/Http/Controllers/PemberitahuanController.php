@@ -33,9 +33,11 @@ class PemberitahuanController extends Controller
                 AdministrasiPesanan::where('IDPesanan', $id_pesanan)->update(['CatatanPembatalan'=>$request->Alasan]);
             }
             elseif($set_status == 21){
-                AdministrasiPesanan::where('IDPesanan', $id_pesanan)->update(['VerifikasiPembayaran'=>1]);
+                Pelacakan::where('IDPesanan', $id_pesanan)->update(['Pembayaran'=>3]);
+                //AdministrasiPesanan::where('IDPesanan', $id_pesanan)->update(['VerifikasiPembayaran'=>1]);
             }
             elseif ($set_status == 22) {
+                Pelacakan::where('IDPesanan', $id_pesanan)->update(['KirimSampel'=>3]);
                 AdministrasiPesanan::where('IDPesanan', $id_pesanan)->update([
                     'PenerimaSampel'=>$request->PenerimaSampel,
                     'Jabatan'=>$request->Jabatan

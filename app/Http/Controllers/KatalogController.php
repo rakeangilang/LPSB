@@ -30,7 +30,13 @@ class KatalogController extends Controller
     public function getAllKatalogUmum()
     {
         try{
-            $katalogs = Katalog::select('IDKatalog', 'JenisAnalisis', 'FotoKatalog', 'HargaIPB', 'HargaNONIPB')->get();
+            $katalogs = Katalog::select('IDKatalog', 'JenisAnalisis', 'FotoKatalog', 'HargaIPB', 'HargaNONIPB', 'IDKategori')
+                        ->where('StatusAktif', 1)->get();
+
+            foreach ($katalogs as $katalog) {
+                $nama_kategori = Kategori::select('Kategori')->where('IDKategori', $katalog->IDKategori)->first()->Kategori;
+                $katalog->setAttribute('Kategori', $nama_kategori);
+            }
 
         return response()->json([
             'success'=>true,
