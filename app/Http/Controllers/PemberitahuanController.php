@@ -106,6 +106,7 @@ class PemberitahuanController extends Controller
     {
         try{
         $id_pelanggan = $request->user()->IDPelanggan;
+        //$cekBatasWaktuPembayaran = $this->cekBatasWaktuPembayaran($id_pelanggan);
         $pemberitahuans = Pemberitahuan::where('IDPelanggan', $id_pelanggan)->orderBy('WaktuPemberitahuan', 'desc')->get();
 
         foreach ($pemberitahuans as $pemberitahuan)
@@ -141,6 +142,47 @@ class PemberitahuanController extends Controller
         return response()->json(['message'=>'Pemberitahuan telah dibaca', 'Status'=>200], 200);
         }
         catch(\Exception $e) {
+            return response()->json(['success'=>false, 'message'=>$e->getMessage(),'Status'=>500], 200);
+        }
+    }
+
+    private function cekBatasWaktuPembayaran($id_pelanggan)
+    {
+        try{
+        $all_id_pesanan = Pesanan::select('IDPesanan')->where('IDPelanggan', $id_pelanggan)->get();
+        foreach ($all_id_pesanan as $single_id_pesanan)
+        {
+            $id_pesanan = $single_id_pesanan->IDPesanan;
+            $record_exists = Pelacakan::where('IDPesanan', $id_pesanan)->where('IDStatus', 2)
+                                    ->where('Pembayaran', 1)->exists();
+            if($record_exists)
+            {
+                $waktu_verif_pesanan = Pemberitahuan::select('WaktuPemberitahuan')->where('IDPesanan', $id_pesanan)
+                                        ->where('IDStatus', 2)->first()->WaktuPemberitahuan;
+                $waktu_sekarang = Carbon::now('Asia/Jakarta')->toDateTimeString();
+                $a = gettype($waktu_verif_pesanan);
+                return $a;
+                $perbedaan_waktu = $waktu_sekarang->diffInHours($waktu_verif_pesanan);
+                // kondisi batal -> jika lebih dari 3 hari belum bayar = auto batal
+                if($perbedaan_waktu > 72)
+                {
+                    $alasan_batal = "batas waktu pembayaran sudah lewat";
+                    AdministrasiPesanan::where('IDPesanan', $id_pesanan)->update(['CatatanPembatalan'=>$alasan_batal]);
+                    Pelacakan::where('IDPesanan', $id_pesanan)->update(['IDStatus' => 7, 'UpdateTerakhir' => $waktu_sekarang]);
+                    
+                    $pemberitahuan = Pemberitahuan::create([
+                        'IDPesanan'=>$id_pesanan,
+                        'IDStatus'=>7,
+                        'WaktuPemberitahuan'=>$waktu_sekarang,
+                        'IDPelanggan'=>$id_pelanggan
+                    ]);
+                }
+            }
+        }
+
+        return 0;
+        }
+        catch(\Exception $e){
             return response()->json(['success'=>false, 'message'=>$e->getMessage(),'Status'=>500], 200);
         }
     }

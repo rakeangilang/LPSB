@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\User;
 use Illuminate\Http\Request;
 //use Illuminate\Support\Facades\Storage;
 
@@ -40,9 +41,13 @@ class DocumentController extends Controller
 
         $filename = 'Hasil ' . $nama . '.docx';
  //     Storage::put('')
-        $templateProcessor->saveAs(storage_path('permohonan_analisis/'.$filename));
+        $base_name = 'Hasil ' . $nama;
+        $hasil_path = storage_path('permohonan_analisis/'.$filename);
+        $templateProcessor->saveAs($hasil_path);
+        $headers = array('Content-Type: application/vnd.openxmlformats-officedocument.wordprocessingml.document');
 
-        return response()->download(storage_path('permohonan_analisis/' . $filename));
+        return response()->download($hasil_path, $base_name . '.docx', $headers);
+        //return response()->download(storage_path('permohonan_analisis/' . $base_name), $ $headers);
 
 //      $objWriter = \PhpOffice\PhpWord\IOFactory::createWriter($templateProcessor, 'Word2007');
         try{
@@ -52,7 +57,7 @@ class DocumentController extends Controller
             return response()->json(['success'=>false, 'message'=>$e->getMessage(),'Status'=>500], 200);
         }
 
-        return response()->download(storage_path('tes.docx'));
+        return response()->download(storage_path('tes.docx'), $base_name, $headers);
     }
 
     public function uploadBuktiPembayaran(User $user, Request $request)
@@ -60,7 +65,10 @@ class DocumentController extends Controller
         try
         {
 //            $gambar = $request;
-            return response()->json(['Status'=>200], 200);
+            $id_pelanggan = $request->user()->IDPelanggan;
+            //$debug_request = dd($request);
+            $all_req = $request->all();
+            return response()->json(['IDPelanggan'=>$id_pelanggan, 'Debug Request'=>$all_req, 'Status'=>200], 200);
         }
         catch(\Exception $e) {
             return response()->json(['success'=>false, 'message'=>$e->getMessage(),'Status'=>500], 200);
