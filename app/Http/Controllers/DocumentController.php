@@ -68,7 +68,7 @@ class DocumentController extends Controller
             $id_pelanggan = $request->user()->IDPelanggan;
             //$debug_request = dd($request);
             $all_req = $request->all();
-            return response()->json(['IDPelanggan'=>$id_pelanggan, 'Debug Request'=>$all_req, 'Status'=>200], 200);
+            return response()->json(['IDPelanggan'=>$id_pelanggan, 'DebugRequest'=>$all_req, 'Status'=>200], 200);
         }
         catch(\Exception $e) {
             return response()->json(['success'=>false, 'message'=>$e->getMessage(),'Status'=>500], 200);
