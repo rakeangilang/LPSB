@@ -44,14 +44,16 @@ class DocumentController extends Controller
         $base_name = 'Hasil ' . $nama;
         $hasil_path = storage_path('permohonan_analisis/'.$filename);
         $templateProcessor->saveAs($hasil_path);
-        $headers = array('Content-Type: application/vnd.openxmlformats-officedocument.wordprocessingml.document');
+        $headers = ['Content-Type'=>'application/vnd.openxmlformats-officedocument.wordprocessingml.document', 'Content-Disposition'=> 'attachment; filename="'.$filename.'"'];
 
-        return response()->download($hasil_path, $base_name . '.docx', $headers);
+
+        //return response()->download($hasil_path, $base_name . '.docx', $headers);
         //return response()->download(storage_path('permohonan_analisis/' . $base_name), $ $headers);
 
 //      $objWriter = \PhpOffice\PhpWord\IOFactory::createWriter($templateProcessor, 'Word2007');
         try{
-            $objWriter->save(storage_path('tes.docx'));
+        return response()->file($hasil_path, $headers);
+        //    $objWriter->save(storage_path('tes.docx'));
         }
         catch(\Exception $e) {
             return response()->json(['success'=>false, 'message'=>$e->getMessage(),'Status'=>500], 200);
