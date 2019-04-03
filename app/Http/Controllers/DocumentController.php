@@ -52,6 +52,7 @@ class DocumentController extends Controller
 
 //      $objWriter = \PhpOffice\PhpWord\IOFactory::createWriter($templateProcessor, 'Word2007');
         try{
+        return response()->download($hasil_path, $base_name . '.docx', [], 'inline');
         return response()->file($hasil_path, $headers);
         //    $objWriter->save(storage_path('tes.docx'));
         }
